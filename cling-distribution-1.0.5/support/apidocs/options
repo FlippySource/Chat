@@ -1,0 +1,24 @@
+-classpath
+'/Users/cb/tmp/1.0/support/target/classes:/Users/cb/tmp/1.0/core/target/cling-core-1.0.5.jar:/Users/cb/.m2/repository/org/teleal/teleal-common/1.0.13/teleal-common-1.0.13.jar'
+-encoding
+'UTF-8'
+-protected
+-sourcepath
+'/Users/cb/tmp/1.0/support/src/main/java'
+-author
+-bottom
+'Copyright &#169; 2011 <a href="http://teleal.com">Teleal GmbH, Switzerland</a>. All Rights Reserved.'
+-charset
+'UTF-8'
+-d
+'/Users/cb/tmp/1.0/support/target/site/apidocs'
+-docencoding
+'UTF-8'
+-doctitle
+'Cling Support 1.0.5 API'
+-link
+'http://java.sun.com/javase/6/docs/api'
+-use
+-version
+-windowtitle
+'Cling Support 1.0.5 API'

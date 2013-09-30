@@ -1,0 +1,3361 @@
+<?xml version="1.0" encoding="utf-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xi="http://www.w3.org/2001/XInclude">
+    <head>
+        <title>Cling Core User Manual</title>
+        <link href="css/manual.css" media="screen" rel="stylesheet" type="text/css"/>
+    </head>
+    <body>
+        <div class="manual">
+            <div class="frontmatter">
+                <h1>Cling Core</h1>
+                <h2>User Manual</h2>
+                <div class="authors">
+                    <h3>Authors:</h3>
+                    <div class="author">Christian Bauer</div>
+                </div>
+                <div class="tableofcontents">
+                    <h3>Table Of Contents:</h3>
+                    <div class="toc">
+                        <div class="tocitem level_1 level_chapter">
+                            <span class="prefix">1.</span>
+                            <a href="#chapter.GettingStarted">Getting Started</a>
+                        </div>
+                        <div class="tocitem level_1 level_chapter">
+                            <span class="prefix">2.</span>
+                            <a href="#chapter.BinaryLight">A first UPnP service and control point</a>
+                        </div>
+                        <div class="tocitem level_2 level_section">
+                            <span class="prefix">2.1.</span>
+                            <a href="#section.SwitchPower">The SwitchPower service implementation</a>
+                        </div>
+                        <div class="tocitem level_2 level_section">
+                            <span class="prefix">2.2.</span>
+                            <a href="#section.BindingDevice">Binding a UPnP device</a>
+                        </div>
+                        <div class="tocitem level_2 level_section">
+                            <span class="prefix">2.3.</span>
+                            <a href="#section.BinaryLightServer">Running the server</a>
+                        </div>
+                        <div class="tocitem level_2 level_section">
+                            <span class="prefix">2.4.</span>
+                            <a href="#section.BinaryLightClient">Creating a control point</a>
+                        </div>
+                        <div class="tocitem level_2 level_section">
+                            <span class="prefix">2.5.</span>
+                            <a href="#section.BinaryLightExecuteAction">Executing an action</a>
+                        </div>
+                        <div class="tocitem level_2 level_section">
+                            <span class="prefix">2.6.</span>
+                            <a href="#section.BinaryLightStartingApp">Starting the application</a>
+                        </div>
+                        <div class="tocitem level_2 level_section">
+                            <span class="prefix">2.7.</span>
+                            <a href="#section.BinaryLightDebugApp">Debugging and logging</a>
+                        </div>
+                        <div class="tocitem level_1 level_chapter">
+                            <span class="prefix">3.</span>
+                            <a href="#chapter.BasicAPI">The Cling Core API</a>
+                        </div>
+                        <div class="tocitem level_2 level_section">
+                            <span class="prefix">3.1.</span>
+                            <a href="#section.BasicAPI.UpnpService">Working with a UpnpService</a>
+                        </div>
+                        <div class="tocitem level_3 level_section">
+                            <span class="prefix">3.1.1.</span>
+                            <a href="#section.BasicAPI.UpnpService.Configuration">Customizing configuration settings</a>
+                        </div>
+                        <div class="tocitem level_3 level_section">
+                            <span class="prefix">3.1.2.</span>
+                            <a href="#section.BasicAPI.UpnpService.ProtocolFactory">The protocol factory</a>
+                        </div>
+                        <div class="tocitem level_3 level_section">
+                            <span class="prefix">3.1.3.</span>
+                            <a href="#section.BasicAPI.UpnpService.Router">Accessing low-level network services</a>
+                        </div>
+                        <div class="tocitem level_2 level_section">
+                            <span class="prefix">3.2.</span>
+                            <a href="#section.BasicAPI.ControlPoint">Client operations with ControlPoint</a>
+                        </div>
+                        <div class="tocitem level_3 level_section">
+                            <span class="prefix">3.2.1.</span>
+                            <a href="#javadoc.example.controlpoint.SearchExecuteTest">Searching the network</a>
+                        </div>
+                        <div class="tocitem level_3 level_section">
+                            <span class="prefix">3.2.2.</span>
+                            <a href="#javadoc.example.controlpoint.ActionInvocationTest">Invoking an action</a>
+                        </div>
+                        <div class="tocitem level_3 level_section">
+                            <span class="prefix">3.2.3.</span>
+                            <a href="#javadoc.example.controlpoint.EventSubscriptionTest">Receiving events from services</a>
+                        </div>
+                        <div class="tocitem level_2 level_section">
+                            <span class="prefix">3.3.</span>
+                            <a href="#section.BasicAPI.Registry">The Registry</a>
+                        </div>
+                        <div class="tocitem level_3 level_section">
+                            <span class="prefix">3.3.1.</span>
+                            <a href="#javadoc.example.registry.RegistryBrowseTest">Browsing the Registry</a>
+                        </div>
+                        <div class="tocitem level_3 level_section">
+                            <span class="prefix">3.3.2.</span>
+                            <a href="#javadoc.example.registry.RegistryListenerTest">Listening to registry changes</a>
+                        </div>
+                        <div class="tocitem level_1 level_chapter">
+                            <span class="prefix">4.</span>
+                            <a href="#chapter.CreatingServices">Creating and binding services</a>
+                        </div>
+                        <div class="tocitem level_2 level_section">
+                            <span class="prefix">4.1.</span>
+                            <a href="#javadoc.example.localservice.BasicBindingTest">Annotating a service implementation</a>
+                        </div>
+                        <div class="tocitem level_3 level_section">
+                            <span class="prefix">4.1.1.</span>
+                            <a href="#javadoc.example.localservice.SwitchPowerAnnotatedClass">Mapping state variables</a>
+                        </div>
+                        <div class="tocitem level_3 level_section">
+                            <span class="prefix">4.1.2.</span>
+                            <a href="#javadoc.example.localservice.SwitchPowerNamedStateVariable">Explicitly naming related state variables</a>
+                        </div>
+                        <div class="tocitem level_3 level_section">
+                            <span class="prefix">4.1.3.</span>
+                            <a href="#javadoc.example.localservice.SwitchPowerExtraGetter">Getting an output value from another method</a>
+                        </div>
+                        <div class="tocitem level_3 level_section">
+                            <span class="prefix">4.1.4.</span>
+                            <a href="#javadoc.example.localservice.SwitchPowerBeanReturn">Getting output values from a JavaBean</a>
+                        </div>
+                        <div class="tocitem level_2 level_section">
+                            <span class="prefix">4.2.</span>
+                            <a href="#javadoc.example.localservice.EventProviderTest">Providing events on service state changes</a>
+                        </div>
+                        <div class="tocitem level_2 level_section">
+                            <span class="prefix">4.3.</span>
+                            <a href="#section.CreatingServices.ConvertingValues">Converting string action argument values</a>
+                        </div>
+                        <div class="tocitem level_3 level_section">
+                            <span class="prefix">4.3.1.</span>
+                            <a href="#javadoc.example.localservice.StringConvertibleTest">String value converters</a>
+                        </div>
+                        <div class="tocitem level_3 level_section">
+                            <span class="prefix">4.3.2.</span>
+                            <a href="#javadoc.example.localservice.EnumTest">Working with enums</a>
+                        </div>
+                        <div class="tocitem level_1 level_chapter">
+                            <span class="prefix">5.</span>
+                            <a href="#chapter.Android">Cling on Android</a>
+                        </div>
+                        <div class="tocitem level_2 level_section">
+                            <span class="prefix">5.1.</span>
+                            <a href="#section.Android.ConfiguringService">Configuring the application service</a>
+                        </div>
+                        <div class="tocitem level_2 level_section">
+                            <span class="prefix">5.2.</span>
+                            <a href="#section.Android.BindService">Accessing the service from an activity</a>
+                        </div>
+                        <div class="tocitem level_2 level_section">
+                            <span class="prefix">5.3.</span>
+                            <a href="#section.Android.Optimize">Optimizing service behavior</a>
+                        </div>
+                        <div class="tocitem level_3 level_section">
+                            <span class="prefix">5.3.1.</span>
+                            <a href="#section.Android.Optimize.MaintainRegistry">Tuning registry maintenance</a>
+                        </div>
+                        <div class="tocitem level_3 level_section">
+                            <span class="prefix">5.3.2.</span>
+                            <a href="#section.Android.Optimize.PauseRegistry">Pausing and resuming registry maintenance</a>
+                        </div>
+                        <div class="tocitem level_3 level_section">
+                            <span class="prefix">5.3.3.</span>
+                            <a href="#section.Android.Optimize.Discovery">Configuring discovery</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="chapter" id="chapter.GettingStarted">
+                <div class="title">1. Getting Started</div>
+                <div class="content">
+                    <p>
+            This is how you use Cling:
+        </p>
+                    <div>
+                        <pre class="prettyprint" xml:space="preserve"><![CDATA[package ...;
+
+import org.teleal.cling.model.message.header.STAllHeader;
+import org.teleal.cling.model.meta.LocalDevice;
+import org.teleal.cling.model.meta.RemoteDevice;
+import org.teleal.cling.registry.Registry;
+import org.teleal.cling.registry.RegistryListener;
+
+/**
+ * Runs a simple UPnP discovery procedure.
+ */
+public class Main {
+
+    public static void main(String[] args) throws Exception {
+
+        // UPnP discovery is asynchronous, we need a callback
+        RegistryListener listener = new RegistryListener() {
+
+            public void remoteDeviceDiscoveryStarted(Registry registry,
+                                                     RemoteDevice device) {
+                System.out.println(
+                        "Discovery started: " + device.getDisplayString()
+                );
+            }
+
+            public void remoteDeviceDiscoveryFailed(Registry registry,
+                                                    RemoteDevice device,
+                                                    Exception ex) {
+                System.out.println(
+                        "Discovery failed: " + device.getDisplayString() + " => " + ex
+                );
+            }
+
+            public void remoteDeviceAdded(Registry registry, RemoteDevice device) {
+                System.out.println(
+                        "Remote device available: " + device.getDisplayString()
+                );
+            }
+
+            public void remoteDeviceUpdated(Registry registry, RemoteDevice device) {
+                System.out.println(
+                        "Remote device updated: " + device.getDisplayString()
+                );
+            }
+
+            public void remoteDeviceRemoved(Registry registry, RemoteDevice device) {
+                System.out.println(
+                        "Remote device removed: " + device.getDisplayString()
+                );
+            }
+
+            public void localDeviceAdded(Registry registry, LocalDevice device) {
+                System.out.println(
+                        "Local device added: " + device.getDisplayString()
+                );
+            }
+
+            public void localDeviceRemoved(Registry registry, LocalDevice device) {
+                System.out.println(
+                        "Local device removed: " + device.getDisplayString()
+                );
+            }
+
+            public void beforeShutdown(Registry registry) {
+                System.out.println(
+                        "Before shutdown, the registry has devices: "
+                        + registry.getDevices().size()
+                );
+            }
+
+            public void afterShutdown() {
+                System.out.println("Shutdown of registry complete!");
+
+            }
+        };
+
+        // This will create necessary network resources for UPnP right away
+        System.out.println("Starting Cling...");
+        UpnpService upnpService = new UpnpServiceImpl(listener);
+
+        // Send a search message to all devices and services, they should respond soon
+        upnpService.getControlPoint().search(new STAllHeader());
+
+        // Let's wait 10 seconds for them to respond
+        System.out.println("Waiting 10 seconds before shutting down...");
+        Thread.sleep(10000);
+
+        // Release all resources and advertise BYEBYE to other UPnP devices
+        System.out.println("Stopping Cling...");
+        upnpService.shutdown();
+    }
+}]]></pre>
+                    </div>
+                    <p>
+            You need <code>cling-core.jar</code> and <code>teleal-common.jar</code> on your
+            classpath to build and run this code.
+        </p>
+                </div>
+            </div>
+            <div class="chapter" id="chapter.BinaryLight">
+                <div class="title">2. A first UPnP service and control point</div>
+                <div class="content">
+                    <p>
+            The most basic UPnP service imaginable is the <em>binary light</em>. This device has one service,
+            the power switch, turning the light on and off. In fact, the <em>SwitchPower:1</em> service and
+            the <em>BinaryLight:1</em> device are standardized templates you can download
+            <a href="http://www.upnp.org/resources/documents.asp">here</a>.
+        </p>
+                    <p>
+            In the following sections we'll implement this UPnP service and device with
+            the Cling Core library as a simple Java console application.
+        </p>
+                    <div class="section" id="section.SwitchPower">
+                        <div class="title">2.1. The SwitchPower service implementation</div>
+                        <div class="content">
+                            <p>
+            This is the source of the <em>SwitchPower:1</em> service - note that although there
+            are many annotations in the source, no runtime dependency on Cling exists:
+        </p>
+                            <div class="citation javacode" id="javacode.example.binarylight.SwitchPower">
+                                <div class="content">
+                                    <pre class="prettyprint">package example.binarylight;
+
+import org.teleal.cling.binding.annotations.*;
+
+@UpnpService(
+        serviceId = @UpnpServiceId("SwitchPower"),
+        serviceType = @UpnpServiceType(value = "SwitchPower", version = 1)
+)
+public class SwitchPower {
+
+    @UpnpStateVariable(defaultValue = "0", sendEvents = false)
+    private boolean target = false;
+
+    @UpnpStateVariable(defaultValue = "0")
+    private boolean status = false;
+
+    @UpnpAction
+    public void setTarget(@UpnpInputArgument(name = "NewTargetValue")
+                          boolean newTargetValue) {
+        target = newTargetValue;
+        status = newTargetValue;
+        System.out.println("Switch is: " + status);
+    }
+
+    @UpnpAction(out = @UpnpOutputArgument(name = "RetTargetValue"))
+    public boolean getTarget() {
+        return target;
+    }
+
+    @UpnpAction(out = @UpnpOutputArgument(name = "ResultStatus"))
+    public boolean getStatus() {
+        return status;
+    }
+
+}
+</pre>
+                                </div>
+                            </div>
+                            <p>
+            To compile this class the Cling Core library has to be available on your
+            classpath. However, once compiled this class can be instantiated and executed in any
+            environment, there are no dependencies on any framework or library code.
+        </p>
+                            <p>
+            The annotations are used by Cling to read the metadata that describes your service, what
+            UPnP state variables it has, how they are accessed, and what methods should be exposed
+            as UPnP actions. You can also provide Cling metadata in an XML file or programmatically through
+            Java code - both options are discussed later in this manual. Source code annotations are
+            usually the best choice.
+        </p>
+                            <p>
+            You might have expected something even simpler: After all, a <em>binary light</em> only
+            needs a single boolean state, it is either on or off. The designers of this service also
+            considered that there might be a difference between switching the light on, and actually
+            seeing the result of that action. Imagine what happens if the light bulb is broken: The
+            target state of the light is set to <em>true</em> but the status is still <em>false</em>,
+            because the <em>SetTarget</em> action could not make the switch. Obviously this won't be
+            a problem with this simple demonstration because it only prints the status to standard
+            console output.
+        </p>
+                        </div>
+                    </div>
+                    <div class="section" id="section.BindingDevice">
+                        <div class="title">2.2. Binding a UPnP device</div>
+                        <div class="content">
+                            <p>
+            Devices (and embedded devices) are created programmatically in Cling, with plain Java
+            code that instantiates an immutable graph of objects. The following method creates such a device
+            graph and binds the service from the previous section to the root device:
+        </p>
+                            <div class="citation javacode" id="javacode.example.binarylight.BinaryLightServer.createDevice..">
+                                <div class="content">
+                                    <pre class="prettyprint">LocalDevice createDevice()
+        throws ValidationException, LocalServiceBindingException, IOException {
+
+    DeviceIdentity identity =
+            new DeviceIdentity(
+                    UDN.uniqueSystemIdentifier("Demo Binary Light")
+            );
+
+    DeviceType type =
+            new UDADeviceType("BinaryLight", 1);
+
+    DeviceDetails details =
+            new DeviceDetails(
+                    "Friendly Binary Light",
+                    new ManufacturerDetails("ACME"),
+                    new ModelDetails(
+                            "BinLight2000",
+                            "A demo light with on/off switch.",
+                            "v1"
+                    )
+            );
+
+    Icon icon =
+            new Icon(
+                    "image/png", 48, 48, 8,
+                    getClass().getResource("icon.png")
+            );
+
+    LocalService&lt;SwitchPower&gt; switchPowerService =
+            new AnnotationLocalServiceBinder().read(SwitchPower.class);
+
+    switchPowerService.setManager(
+            new DefaultServiceManager(switchPowerService, SwitchPower.class)
+    );
+
+    return new LocalDevice(identity, type, details, icon, switchPowerService);
+
+    /* Several services can be bound to the same device:
+    return new LocalDevice(
+            identity, type, details, icon,
+            new LocalService[] {switchPowerService, myOtherService}
+    );
+    */
+    
+}
+</pre>
+                                </div>
+                            </div>
+                            <p>
+            Let's step through this code. As you can see, all arguments that make up the device's metadata
+            have to be provided through constructors, because the metadata classes are immutable and hence
+            thread-safe.
+        </p>
+                            <dl>
+                                <dt>DeviceIdentity</dt>
+                                <dd>
+                                    <p>
+                    Every device, no matter if it is a root device or an embedded device of a root device,
+                    requires a unique device name (UDN). This UDN should be stable, that is, it should not
+                    change when the device is restarted. When you physically unplug a UPnP appliance from the
+                    network (or when you simply turn it off or put it into standby mode), and when you make
+                    it available later on, it should expose the same UDN so that clients know they are dealing
+                    with the same device. The <code>UDN.uniqueSystemIdentifier()</code> method provides exactly
+                    that: A unique identifier that is the same every time this method is called on the same
+                    computer system. It hashes the network cards hardware address and a few other
+                    elements to guarantee uniqueness and stability.
+                </p>
+                                </dd>
+                                <dt>DeviceType</dt>
+                                <dd>
+                                    <p>
+                    The type of a device also includes its version, a plain integer. In this case the
+                    <em>BinaryLight:1</em> is a standardized device template which adheres to the UDA (UPnP
+                    Device Architecture) specification.
+                </p>
+                                </dd>
+                                <dt>DeviceDetails</dt>
+                                <dd>
+                                    <p>
+                    This detailed information about the device's "friendly name", as well as model and manufacturer
+                    information is optional. You should at least provide a friendly name value, this is what UPnP
+                    applications will display primarily.
+                </p>
+                                </dd>
+                                <dt>Icon</dt>
+                                <dd>
+                                    <p>
+                    Every device can have a bunch of icons associated with it which similar to the friendly name
+                    are shown to users when appropriate. You do not have to provide any icons if you don't want to,
+                    use a constructor of <code>LocalDevice</code> without an icon parameter.
+                </p>
+                                </dd>
+                                <dt>Service</dt>
+                                <dd>
+                                    <p>
+                    Finally, the most important part of the device are its services. Each <code>Service</code>
+                    instance encapsulates the metadata for a particular service, what actions and state variables it has,
+                    and how it can be invoked. Here we use the Cling annotation binder to
+                    instantiate a <code>Service</code>, reading the annotation metadata of the
+                    <code>SwitchPower</code> class.
+                </p>
+                                </dd>
+                            </dl>
+                            <p>
+            Because a <code>Service</code> instance is only metadata that describes the service, you
+            have to set a <code>ServiceManager</code> to do some actual work. This is the link between the
+            metadata and your implementation of a service, where the rubber meets the road.
+            The <code>DefaultServiceManager</code> will instantiate the given <code>SwitchPower</code>
+            class when an action which operates on the service has to be executed (this happens lazily,
+            as late as possible). The manager will hold on to the instance and always re-use it as long
+            as the service is registered with the UPnP stack. In other words, the service manager is the
+            factory that instantiates your actual implementation of a UPnP service.
+        </p>
+                            <p>
+            Also note that <code>LocalDevice</code> is the interface that represents a UPnP device which is
+            "local" to the running UPnP stack on the host. Any device that has been discovered through the network
+            will be a <code>RemoteDevice</code> with <code>RemoteService</code>'s, you typically do not
+            instantiate these directly.
+        </p>
+                            <p>
+            A <code>ValidationException</code> will be thrown when the device graph you instantiated was invaild,
+            you can call <code>getErrors()</code> on the exception to find out which property value of which
+            class failed an integrity rule. The local service annotation binder will provide a
+            <code>LocalServiceBindingException</code> if something is wrong with your
+            annotation metadata on your service implementation class. An <code>IOException</code> can only
+            by thrown by this particular <code>Icon</code> constructor, when it reads the resource file.
+        </p>
+                        </div>
+                    </div>
+                    <div class="section" id="section.BinaryLightServer">
+                        <div class="title">2.3. Running the server</div>
+                        <div class="content">
+                            <p>
+            The Cling Core main API entry point is a thread-safe and typically single shared instance of
+            <code>UpnpService</code>:
+        </p>
+                            <div class="citation javacode" id="javacode.example.binarylight.BinaryLightServer">
+                                <div class="content">
+                                    <pre class="prettyprint">package example.binarylight;
+
+import org.teleal.cling.UpnpService;
+import org.teleal.cling.UpnpServiceImpl;
+import org.teleal.cling.binding.*;
+import org.teleal.cling.binding.annotations.*;
+import org.teleal.cling.model.*;
+import org.teleal.cling.model.meta.*;
+import org.teleal.cling.model.types.*;
+
+import java.io.IOException;
+
+public class BinaryLightServer implements Runnable {
+
+    public static void main(String[] args) throws Exception {
+        // Start a user thread that runs the UPnP stack
+        Thread serverThread = new Thread(new BinaryLightServer());
+        serverThread.setDaemon(false);
+        serverThread.start();
+    }
+
+    public void run() {
+        try {
+
+            final UpnpService upnpService = new UpnpServiceImpl();
+
+            Runtime.getRuntime().addShutdownHook(new Thread() {
+                @Override
+                public void run() {
+                    upnpService.shutdown();
+                }
+            });
+
+            // Add the bound local device to the registry
+            upnpService.getRegistry().addDevice(
+                    createDevice()
+            );
+
+        } catch (Exception ex) {
+            System.err.println("Exception occured: " + ex);
+            ex.printStackTrace(System.err);
+            System.exit(1);
+        }
+    }
+
+}
+</pre>
+                                </div>
+                            </div>
+                            <p>
+            (The <code>createDevice()</code> method from the previous section should be added to this class.)
+        </p>
+                            <p>
+            As soon as the <code>UPnPServiceImpl</code> is created, the stack is up and running. You always
+            have to create a <code>UPnPService</code> instance, no matter if you write a client or a server.
+            The <code>UpnpService</code> maintains a registry of all the discovered remote device on the network,
+            and all the bound local devices. It manages advertisements for discovery and event handling
+            in the background.
+        </p>
+                            <p>
+            You should shut down the UPnP service properly when your application quits, so that all
+            other UPnP systems on your network will be notified that bound devices which are local to your
+            application are no longer available. If you do not shut down the <code>UpnpService</code>
+            when your application quits, other UPnP control points on your network might still show devices
+            as available when they are in fact already gone.
+        </p>
+                            <p>
+            The <code>createDevice()</code> method from the previous section is called here, as soon as the
+            <code>Registry</code> of the local UPnP service stack is available.
+        </p>
+                            <p>
+            You can now compile and start this server, it should print some informational messages to your
+            console and then wait for connections from UPnP control points. Use the
+            <a href="http://teleal.org/projects/cling/workbench/">Cling Workbench</a> if you want to test your
+            server immediately.
+        </p>
+                        </div>
+                    </div>
+                    <div class="section" id="section.BinaryLightClient">
+                        <div class="title">2.4. Creating a control point</div>
+                        <div class="content">
+                            <p>
+            The client application has the same basic scaffolding as the server, it also uses a
+            shared single instance of <code>UpnpService</code>:
+        </p>
+                            <div class="citation javacode" id="javacode.example.binarylight.BinaryLightClient">
+                                <div class="content">
+                                    <pre class="prettyprint">package example.binarylight;
+
+import org.teleal.cling.UpnpService;
+import org.teleal.cling.UpnpServiceImpl;
+import org.teleal.cling.controlpoint.*;
+import org.teleal.cling.model.action.*;
+import org.teleal.cling.model.message.*;
+import org.teleal.cling.model.message.header.*;
+import org.teleal.cling.model.meta.*;
+import org.teleal.cling.model.types.*;
+import org.teleal.cling.registry.*;
+
+public class BinaryLightClient implements Runnable {
+
+    public static void main(String[] args) throws Exception {
+        // Start a user thread that runs the UPnP stack
+        Thread clientThread = new Thread(new BinaryLightClient());
+        clientThread.setDaemon(false);
+        clientThread.start();
+
+    }
+
+    public void run() {
+        try {
+
+            UpnpService upnpService = new UpnpServiceImpl();
+
+            // Add a listener for device registration events
+            upnpService.getRegistry().addListener(
+                    createRegistryListener(upnpService)
+            );
+
+            // Broadcast a search message for all devices
+            upnpService.getControlPoint().search(
+                    new STAllHeader()
+            );
+
+        } catch (Exception ex) {
+            System.err.println("Exception occured: " + ex);
+            System.exit(1);
+        }
+    }
+
+}
+</pre>
+                                </div>
+                            </div>
+                            <p>
+            Typically a control point sleeps until a device with a specific type of service becomes
+            available on the network. The <code>RegistryListener</code> is called by Cling when a
+            remote device has been discovered - or when it announced itself automatically. Because you
+            usually do not want to wait for the periodic announcements of devices, a control point
+            can also execute a search for all devices (or devices with certain service types or UDN),
+            which will trigger an immediate discovery announcement from those devices that match
+            the search query.
+        </p>
+                            <p>
+            You can already see the <code>ControlPoint</code> API here with its <code>search(...)</code>
+            method, this is one of the main interfaces you interact with when writing a UPnP client with
+            Cling.
+        </p>
+                            <p>
+            If you compare this code with the server code from the previous section you can see
+            that we are not shutting down the <code>UpnpService</code> when the application quits. This
+            is not an issue here, because this application does not have any local devices or service
+            event listeners (not the same as registry listeners) bound and registered. Hence, we
+            do not have to announce their departure on application shutdown and can keep the
+            code simple for the sake of the example.
+        </p>
+                            <p>
+            Let's focus on the registry listener implementation and what happens when a UPnP device has
+            been discovered on the network.
+        </p>
+                        </div>
+                    </div>
+                    <div class="section" id="section.BinaryLightExecuteAction">
+                        <div class="title">2.5. Executing an action</div>
+                        <div class="content">
+                            <p>
+            The control point we are creating here is only interested in services that implement
+            <em>SwitchPower</em>. According to its template definition this service has the
+            <code>SwitchPower</code> service identifier, so when a device has been discovered we
+            can check if it offers that service:
+        </p>
+                            <div class="citation javacode" id="javacode.example.binarylight.BinaryLightClient.createRegistryListener.UpnpService.">
+                                <div class="content">
+                                    <pre class="prettyprint">RegistryListener createRegistryListener(final UpnpService upnpService) {
+    return new DefaultRegistryListener() {
+
+        ServiceId serviceId = new UDAServiceId("SwitchPower");
+
+        @Override
+        public void remoteDeviceAdded(Registry registry, RemoteDevice device) {
+
+            Service switchPower;
+            if ((switchPower = device.findService(serviceId)) != null) {
+
+                System.out.println("Service discovered: " + switchPower);
+                executeAction(upnpService, switchPower);
+
+            }
+
+        }
+
+        @Override
+        public void remoteDeviceRemoved(Registry registry, RemoteDevice device) {
+            Service switchPower;
+            if ((switchPower = device.findService(serviceId)) != null) {
+                System.out.println("Service disappeared: " + switchPower);
+            }
+        }
+
+    };
+}
+</pre>
+                                </div>
+                            </div>
+                            <p>
+            If a service becomes available we immediately execute an action on that service. When a
+            <code>SwitchPower</code> device disappears from the network a log message is printed.
+            Remember that this is a very trivial control point, it executes a single a fire-and-forget
+            operation when a service becomes available:
+        </p>
+                            <div class="citation javacode" id="BinaryLightClient.executeAction">
+                                <div class="content">
+                                    <pre class="prettyprint">void executeAction(UpnpService upnpService, Service switchPowerService) {
+
+        ActionInvocation setTargetInvocation =
+                new SetTargetActionInvocation(switchPowerService);
+
+        // Executes asynchronous in the background
+        upnpService.getControlPoint().execute(
+                new ActionCallback(setTargetInvocation) {
+
+                    @Override
+                    public void success(ActionInvocation invocation) {
+                        assert invocation.getOutput().length == 0;
+                        System.out.println("Successfully called action!");
+                    }
+
+                    @Override
+                    public void failure(ActionInvocation invocation,
+                                        UpnpResponse operation,
+                                        String defaultMsg) {
+                        System.err.println(defaultMsg);
+                    }
+                }
+        );
+
+}
+
+class SetTargetActionInvocation extends ActionInvocation {
+
+    SetTargetActionInvocation(Service service) {
+        super(service.getAction("SetTarget"));
+        try {
+
+            // Throws InvalidValueException if the value is of wrong type
+            setInput("NewTargetValue", true);
+
+        } catch (InvalidValueException ex) {
+            System.err.println(ex.getMessage());
+            System.exit(1);
+        }
+    }
+}
+</pre>
+                                </div>
+                            </div>
+                            <p>
+            The <code>Action</code> (metadata) and the <code>ActionInvocation</code> (actual call data) APIs
+            allow very fine-grained control of how an invocation is prepared, how input values are set,
+            how the action is executed, and how the output and outcome is handled. UPnP is inherently
+            asynchronous, so just like the registry listener, executing an action is exposed to you
+            as a callback-style API.
+        </p>
+                            <p>
+            It is recommended that you encapsulate specific action invocations within a subclass of
+            <code>ActionInvocation</code>, which gives you an opportunity to further abstract the input
+            and output values of an invocation. Note however that an instance of <code>ActionInvocation</code>
+            is not thread-safe and should not be executed in parallel by two threads.
+        </p>
+                            <p>
+            The <code>ActionCallback</code> has two main methods you have to implement, one is called
+            when the execution was successful, the other when it failed. There are many reasons why an
+            action execution might fail, read the API documentation for all possible combinations or
+            just print the generated user-friendly default error message.
+        </p>
+                        </div>
+                    </div>
+                    <div class="section" id="section.BinaryLightStartingApp">
+                        <div class="title">2.6. Starting the application</div>
+                        <div class="content">
+                            <p>
+            Compile the binary light demo application:
+        </p>
+                            <div>
+                                <pre xml:space="preserve"><![CDATA[$ javac -cp /path/to/teleal-common.jar:/path/to/cling-core.jar \
+        -d classes/ \
+        src/example/binarylight/BinaryLightServer.java \
+        src/example/binarylight/BinaryLightClient.java \
+        src/example/binarylight/SwitchPower.java]]></pre>
+                            </div>
+                            <p>
+            Don't forget to copy your <code>icon.png</code> file into the <code>classes</code> output
+            directory as well, into the right package from which it is loaded as a reasource (the
+            <code>example.binarylight</code> package if you followed the previous sections verbatim).
+        </p>
+                            <p>
+            You can start the server or client first, which one doesn't matter as they will
+            discover each other automatically:
+        </p>
+                            <div>
+                                <pre xml:space="preserve"><![CDATA[$ java -cp /path/to/teleal-common.jar:/path/to/cling-core.jar:classes/ \
+        example.binaryLight.BinaryLightServer]]></pre>
+                            </div>
+                            <div>
+                                <pre xml:space="preserve"><![CDATA[$ java -cp /path/to/teleal-common.jar:/path/to/cling-core.jar:classes/ \
+        example.binaryLight.BinaryLightClient]]></pre>
+                            </div>
+                            <p>
+            You should see discovery and action execution messages on each console. You can stop
+            and restart the applications individually (press CTRL+C on the console).
+        </p>
+                        </div>
+                    </div>
+                    <div class="section" id="section.BinaryLightDebugApp">
+                        <div class="title">2.7. Debugging and logging</div>
+                        <div class="content">
+                            <p>
+            Although the binary light is a very simple example, you might run into problems. Cling Core
+            helps you resolve most problems with extensive logging. Internally, Cling Core uses Java JDK logging,
+            also known as <code>java.util.logging</code> or JUL. There are no wrappers, logging frameworks,
+            logging services, or other dependencies.
+        </p>
+                            <p>
+            By default, the implementation of JUL in the Sun JDK will print only messages with level
+            INFO, WARNING, or SEVERE on <code>System.out</code>, and it will print each message over two
+            lines. This is quite inconvenient and ugly, so your first step is probably to configure one
+            line per message. This requires a custom logging handler.
+        </p>
+                            <p>
+            Next you want to configure logging levels for different logging categories. Cling Core will
+            output some INFO level messages on startup and shutdown, but is otherwise silent during runtime
+            unless a problem occurs - it will then log messages at WARNING or SEVERE level.
+        </p>
+                            <p>
+            For debugging, usually more detailed logging levels for various log categories are required.
+            The logging categories in Cling Core are package names, e.g the root logger is available under
+            the name <code>org.teleal.cling</code>. The following tables show typically used categories and the
+            recommended level for debugging:
+        </p>
+                            <table border="1" class="infotable fullwidth">
+                                <thead>
+                                    <tr>
+                                        <th>Network/Transport</th>
+                                        <th class="thirdwidth"> </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="nowrap">
+                                            <code>org.teleal.cling.transport.spi.DatagramIO (FINE)</code>
+                                            <br/>
+                                            <code>org.teleal.cling.transport.spi.MulticastReceiver (FINE)</code>
+                                            <br/>
+                                        </td>
+                                        <td>UDP communication</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="nowrap">
+                                            <code>org.teleal.cling.transport.spi.DatagramProcessor (FINER)</code>
+                                            <br/>
+                                        </td>
+                                        <td>UDP datagram processing and content</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="nowrap">
+                                            <code>org.teleal.cling.transport.spi.UpnpStream (FINER)</code>
+                                            <br/>
+                                            <code>org.teleal.cling.transport.spi.StreamServer (FINE)</code>
+                                            <br/>
+                                            <code>org.teleal.cling.transport.spi.StreamClient (FINE)</code>
+                                            <br/>
+                                        </td>
+                                        <td>TCP communication</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="nowrap">
+                                            <code>org.teleal.cling.transport.spi.SOAPActionProcessor (FINER)</code>
+                                            <br/>
+                                        </td>
+                                        <td>SOAP action message processing and content</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="nowrap">
+                                            <code>org.teleal.cling.transport.spi.GENAEventProcessor (FINER)</code>
+                                            <br/>
+                                        </td>
+                                        <td>GENA event message processing and content</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="nowrap">
+                                            <code>org.teleal.cling.transport.impl.HttpHeaderConverter (FINER)</code>
+                                            <br/>
+                                        </td>
+                                        <td>HTTP header processing</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <br/>
+                            <table border="1" class="infotable fullwidth">
+                                <thead>
+                                    <tr>
+                                        <th>UPnP Protocol</th>
+                                        <th class="thirdwidth"> </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="nowrap">
+                                            <code>org.teleal.cling.protocol.ProtocolFactory (FINER)</code>
+                                            <br/>
+                                            <code>org.teleal.cling.protocol.async (FINER)</code>
+                                            <br/>
+                                        </td>
+                                        <td>Discovery (Notification &amp; Search)</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="nowrap">
+                                            <code>org.teleal.cling.protocol.ProtocolFactory (FINER)</code>
+                                            <br/>
+                                            <code>org.teleal.cling.protocol.RetrieveRemoteDescriptors (FINE)</code>
+                                            <br/>
+                                            <code>org.teleal.cling.protocol.sync.ReceivingRetrieval (FINE)</code>
+                                            <br/>
+                                            <code>org.teleal.cling.binding.xml.DeviceDescriptorBinder (FINE)</code>
+                                            <br/>
+                                            <code>org.teleal.cling.binding.xml.ServiceDescriptorBinder (FINE)</code>
+                                            <br/>
+                                        </td>
+                                        <td>Description</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="nowrap">
+                                            <code>org.teleal.cling.protocol.ProtocolFactory (FINER)</code>
+                                            <br/>
+                                            <code>org.teleal.cling.protocol.sync.ReceivingAction (FINER)</code>
+                                            <br/>
+                                            <code>org.teleal.cling.protocol.sync.SendingAction (FINER)</code>
+                                            <br/>
+                                        </td>
+                                        <td>Control</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="nowrap">
+                                            <code>org.teleal.cling.model.gena (FINER)</code>
+                                            <br/>
+                                            <code>org.teleal.cling.protocol.ProtocolFactory (FINER)</code>
+                                            <br/>
+                                            <code>org.teleal.cling.protocol.sync.ReceivingEvent (FINER)</code>
+                                            <br/>
+                                            <code>org.teleal.cling.protocol.sync.ReceivingSubscribe (FINER)</code>
+                                            <br/>
+                                            <code>org.teleal.cling.protocol.sync.ReceivingUnsubscribe (FINER)</code>
+                                            <br/>
+                                            <code>org.teleal.cling.protocol.sync.SendingEvent (FINER)</code>
+                                            <br/>
+                                            <code>org.teleal.cling.protocol.sync.SendingSubscribe (FINER)</code>
+                                            <br/>
+                                            <code>org.teleal.cling.protocol.sync.SendingUnsubscribe (FINER)</code>
+                                            <br/>
+                                            <code>org.teleal.cling.protocol.sync.SendingRenewal (FINER)</code>
+                                            <br/>
+                                        </td>
+                                        <td>GENA</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <br/>
+                            <table border="1" class="infotable fullwidth">
+                                <thead>
+                                    <tr>
+                                        <th>Core</th>
+                                        <th class="thirdwidth"> </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="nowrap">
+                                            <code>org.teleal.cling.transport.Router (FINER)</code>
+                                            <br/>
+                                        </td>
+                                        <td>
+                    Message Router
+                </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="nowrap">
+                                            <code>org.teleal.cling.registry.Registry (FINER)</code>
+                                            <br/>
+                                            <code>org.teleal.cling.registry.LocalItems (FINER)</code>
+                                            <br/>
+                                            <code>org.teleal.cling.registry.RemoteItems (FINER)</code>
+                                            <br/>
+                                        </td>
+                                        <td>Registry</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="nowrap">
+                                            <code>org.teleal.cling.binding.annotations (FINER)</code>
+                                            <br/>
+                                            <code>org.teleal.cling.model.meta.LocalService (FINER)</code>
+                                            <br/>
+                                            <code>org.teleal.cling.model.action (FINER)</code>
+                                            <br/>
+                                            <code>org.teleal.cling.model.state (FINER)</code>
+                                            <br/>
+                                            <code>org.teleal.cling.model.DefaultServiceManager (FINER)</code>
+                                            <br/>
+                                        </td>
+                                        <td>Local service binding &amp; invocation</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="nowrap">
+                                            <code>org.teleal.cling.controlpoint (FINER)</code>
+                                            <br/>
+                                        </td>
+                                        <td>Control Point interaction</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <p>
+            One way to configure JUL is with a properties file. For example, create
+            the following file as <code>mylogging.properties</code>:
+        </p>
+                            <div>
+                                <pre xml:space="preserve"><![CDATA[# Enables a one-message-per-line handler (shipping in teleal-common.jar)
+handlers=org.teleal.common.logging.SystemOutLoggingHandler
+
+# The default (root) log level
+.level=INFO
+
+# Extra settings for various categories
+
+org.teleal.cling.level=INFO
+
+org.teleal.cling.protocol.level=FINEST
+
+org.teleal.cling.registry.Registry.level=FINER
+org.teleal.cling.registry.LocalItems.level=FINER
+org.teleal.cling.registry.RemoteItems.level=FINER ]]></pre>
+                            </div>
+                            <p>
+            You can now start your application with a system property that names your logging
+            configuration:
+        </p>
+                            <div>
+                                <pre xml:space="preserve"><![CDATA[$ java -cp /path/to/teleal-common.jar:/path/to/cling-core.jar:classes/ \
+        -Djava.util.logging.config.file=/path/to/mylogging.properties \
+        example.binaryLight.BinaryLightServer]]></pre>
+                            </div>
+                            <p>
+            You should see the desired log messages printed on <code>System.out</code>.
+        </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="chapter" id="chapter.BasicAPI">
+                <div class="title">3. The Cling Core API</div>
+                <div class="content">
+                    <p>
+            The programming interface of Cling is fundamentally the same for UPnP clients and servers. The single
+            entry point for any program is the <code>UpnpService</code> instance. Through this API you access
+            the local UPnP stack, and either execute operations as a client (control point) or provide services
+            to local or remote clients through the registry.
+        </p>
+                    <p>
+            The following diagram shows the most important interfaces of Cling Core:
+        </p>
+                    <img alt="API Overview" src="img/api_overview.png" style="display:block; margin-left: auto; margin-right:auto;"/>
+                    <p>
+            You'll be calling these interfaces to work with UPnP devices and interact with UPnP services. Cling
+            provides a fine-grained meta-model representing these artifacts:
+        </p>
+                    <img alt="Metamodel Overview" src="img/metamodel_overview.png" style="display:block; margin-left: auto; margin-right:auto;"/>
+                    <p>
+            In this chapter we'll walk through the API and metamodel in more detail, starting with the <code>UpnpService</code>.
+        </p>
+                    <div class="section" id="section.BasicAPI.UpnpService">
+                        <div class="title">3.1. Working with a UpnpService</div>
+                        <div class="content">
+                            <p>
+            The <code>UpnpService</code> is an interface:
+        </p>
+                            <div>
+                                <pre class="prettyprint" xml:space="preserve"><![CDATA[public interface UpnpService {
+
+    public UpnpServiceConfiguration getConfiguration();
+    public ProtocolFactory getProtocolFactory();
+    public Router getRouter();
+
+    public ControlPoint getControlPoint();
+    public Registry getRegistry();
+
+    public void shutdown();
+
+}]]></pre>
+                            </div>
+                            <p>
+            An instance of <code>UpnpService</code> represents a running UPnP stack, including
+            all network listeners, background maintenance threads, and so on. Cling Core bundles a default
+            implementation which you can simply instantiate as follows:
+        </p>
+                            <div>
+                                <pre class="prettyprint" xml:space="preserve"><![CDATA[UpnpService upnpService = new UpnpServiceImpl();]]></pre>
+                            </div>
+                            <p>
+            With this implementation, the local UPnP stack is ready immediately, it listens on the network for
+            UPnP messages. You should call the <code>shutdown()</code> method when you no longer need the UPnP stack.
+            The bundled implementation will then cut all connections with remote event listeners and also notify all
+            other UPnP participants on the network that your local services are no longer available. If you do
+            not shutdown your UPnP stack, remote control points might think that your services are still available
+            until your earlier announcements expire.
+        </p>
+                            <p>
+            The bundled implementation offers two additional constructors:
+        </p>
+                            <div>
+                                <pre class="prettyprint" xml:space="preserve"><![CDATA[UpnpService upnpService =
+    new UpnpServiceImpl(RegistryListener... registryListeners);]]></pre>
+                            </div>
+                            <p>
+            This constructor accepts your custom <code>RegistryListener</code> instances, which will be activated
+            immediately even before the UPnP stack listens on any network interface. This means that you can be
+            notified of <em>all</em> incoming device and service registrations as soon as the network stack is ready.
+            Note that this is rarely useful, you'd typically send search requests after the stack is up and running
+            anyway - after adding listeners to the registry.
+        </p>
+                            <p>
+            The second constructor supports customization of the UPnP stack configuration:
+        </p>
+                            <div>
+                                <pre class="prettyprint" xml:space="preserve"><![CDATA[UpnpService upnpService =
+    new UpnpServiceImpl(new DefaultUpnpServiceConfiguration(8081));]]></pre>
+                            </div>
+                            <p>
+            This example configuration will change the TCP listening port of the UPnP stack to <code>8081</code>,
+            the default being an ephemeral (system-selected free) port. The <code>UpnpServiceConfiguration</code>
+            is also an interface, in the example above you can see how the bundled default implementation
+            is instantiated.
+        </p>
+                            <p>
+            The following section explain the methods of the <code>UpnpService</code> interface and what
+            they return in more detail.
+        </p>
+                            <div class="section" id="section.BasicAPI.UpnpService.Configuration">
+                                <div class="title">3.1.1. Customizing configuration settings</div>
+                                <div class="content">
+                                    <p>
+                    This is the configuration interface of the default UPnP stack in Cling Core, an instance of
+                    which you have to provide when creating the <code>UpnpServiceImpl</code>:
+                </p>
+                                    <div>
+                                        <pre class="prettyprint" xml:space="preserve"><![CDATA[public interface UpnpServiceConfiguration {
+
+    // NETWORK
+    public NetworkAddressFactory createNetworkAddressFactory();
+
+    public DatagramProcessor getDatagramProcessor();
+    public SOAPActionProcessor getSoapActionProcessor();
+    public GENAEventProcessor getGenaEventProcessor();
+
+    public StreamClient createStreamClient();
+    public MulticastReceiver createMulticastReceiver(NetworkAddressFactory naf);
+    public DatagramIO createDatagramIO(NetworkAddressFactory naf);
+    public StreamServer createStreamServer(NetworkAddressFactory naf);
+
+    public Executor getMulticastReceiverExecutor();
+    public Executor getDatagramIOExecutor();
+    public Executor getStreamServerExecutor();
+
+    // DESCRIPTORS
+    public DeviceDescriptorBinder getDeviceDescriptorBinderUDA10();
+    public ServiceDescriptorBinder getServiceDescriptorBinderUDA10();
+
+    // PROTOCOL
+    public Executor getAsyncProtocolExecutor();
+    public Executor getSyncProtocolExecutor();
+
+    // REGISTRY
+    public Namespace getNamespace();
+    public Executor getRegistryMaintainerExecutor();
+    public Executor getRegistryListenerExecutor();
+
+}]]></pre>
+                                    </div>
+                                    <p>
+                    This is quite an extensive SPI but you typically won't implement it from scratch. Overriding
+                    and customizing the bundled <code>DefaultUpnpServiceConfiguration</code> should suffice in most
+                    cases.
+                </p>
+                                    <p>
+                    The configuration settings reflect the internal structure of Cling Core:
+                </p>
+                                    <dl>
+                                        <dt>Network</dt>
+                                        <dd>
+                                            <p>
+                            The <code>NetworkAddressFactory</code> provides the network interfaces, ports, and
+                            multicast settings which are used by the UPnP stack. At the time of writing, the following
+                            interfaces and IP addresses are ignored by the default configuration: any IPv6 interfaces
+                            and addresses, interfaces whose name starts with "vmnet", and the local loopback.
+                            Otherwise, all interfaces and their TCP/IP addresses are used and bound.
+                        </p>
+                                            <p>
+                            You can set the system property <code>org.teleal.cling.network.useInterfaces</code> to
+                            provide a comma-separated list of network interfaces you'd like to bind excusively.
+                            Additionally, you can restrict the actual TCP/IP addresses to which the stack will
+                            bind with a comma-separated list of IP address provided through the
+                            <code>org.teleal.cling.network.useAddresses</code> system property.
+                        </p>
+                                            <p>
+                            Furthermore, the configuration declares the network-level message listeners and
+                            senders, that is, the implementations used by the network <code>Router</code>.
+                        </p>
+                                            <p>
+                            Stream messages are TCP HTTP requests and responses, the bundled implementation
+                            will use the Sun JDK 6.0 webserver to listen for HTTP requests, and it sends
+                            HTTP requests through the standard JDK <code>HttpURLConnection</code>.
+                        </p>
+                                            <p>
+                            UDP unicast and multicast datagrams are received, parsed, and send by a custom
+                            implementation bundled with Cling Core that does not require any particular Sun
+                            JDK classes.
+                        </p>
+                                        </dd>
+                                        <dt>Descriptors</dt>
+                                        <dd>
+                                            <p>
+                            Reading and writing UPnP XML descriptors is handled by binders, you can provide
+                            alternative implementations if necessary.
+                        </p>
+                                        </dd>
+                                        <dt>Executors</dt>
+                                        <dd>
+                                            <p>
+                            The Cling UPnP stack is multi-threaded, thread creation and execution is handled
+                            through <code>java.util.concurrent</code> executors. The default configuration
+                            uses a pool of threads with a maximum size of 64 concurrently running threads,
+                            which should suffice for even very large installations. Executors can be
+                            configured fine-grained, for network message handling, actual UPnP protocol
+                            execution (handling discovery, control, and event procedures), and local
+                            registry maintenance and listener callback execution. Most likely you will not
+                            have to customize any of these settings.
+                        </p>
+                                        </dd>
+                                    </dl>
+                                    <p>
+                    If you are trying to use Cling Core in a runtime container such as Tomcat, JBoss AS,
+                    or Glassfish, you might run into an error on startup. The error tells you that
+                    Cling couldn't use the Java JDK's <code>HTTPURLConnection</code> for HTTP
+                    client operations. This is an old and badly designed part of the JDK: Only "one
+                    application" in the whole JVM can configure it. If your container is already using
+                    the <code>HTTPURLConnection</code>, you have to switch Cling to an alternative
+                    HTTP client, e.g. the other bundled implementation based on Apache HTTP Core.
+                </p>
+                                    <p>
+                    Furthermore, as mentioned earlier, Cling Core provides HTTP services using, by default,
+                    the SUN JDK 6.x bundled webserver. If you are not deploying with the Sun JDK, or if you
+                    also switched the HTTP client already to Apache HTTP Core, you probably also have or
+                    want to switch the HTTP server.
+                </p>
+                                    <p>
+                    This is how you override the default network transport configuration:
+                </p>
+                                    <div>
+                                        <pre class="prettyprint" xml:space="preserve"><![CDATA[...
+import org.teleal.cling.transport.impl.apache.StreamClientConfigurationImpl;
+import org.teleal.cling.transport.impl.apache.StreamClientImpl;
+import org.teleal.cling.transport.impl.apache.StreamServerConfigurationImpl;
+import org.teleal.cling.transport.impl.apache.StreamServerImpl;
+
+public class MyUpnpServiceConfiguration extends DefaultUpnpServiceConfiguration {
+
+    @Override
+    public StreamClient createStreamClient() {
+        return new StreamClientImpl(new StreamClientConfigurationImpl());
+    }
+
+    @Override
+    public StreamServer createStreamServer(NetworkAddressFactory networkAddressFactory) {
+        return new StreamServerImpl(
+                new StreamServerConfigurationImpl(
+                        networkAddressFactory.getStreamListenPort()
+                )
+        );
+    }
+
+}]]></pre>
+                                    </div>
+                                    <p>
+                    Don't forget to add the Apache HTTP Core libraries to your classpath or as dependencies
+                    in your <code>pom.xml</code>!
+                </p>
+                                </div>
+                            </div>
+                            <div class="section" id="section.BasicAPI.UpnpService.ProtocolFactory">
+                                <div class="title">3.1.2. The protocol factory</div>
+                                <div class="content">
+                                    <p>
+                    Cling Core internals are modular and any aspect of the UPnP protocol is handled by
+                    an implementation (class) which can be replaced without affecting any other aspect.
+                    The <code>ProtocolFactory</code> provides implementations, it is
+                    always the first access point for the UPnP stack when a message which arrives on the
+                    network or an outgoing message has to be handled:
+                </p>
+                                    <div>
+                                        <pre class="prettyprint" xml:space="preserve"><![CDATA[public interface ProtocolFactory {
+
+    public ReceivingAsync createReceivingAsync(IncomingDatagramMessage message)
+                            throws ProtocolCreationException;;
+
+    public ReceivingSync createReceivingSync(StreamRequestMessage requestMessage);
+                            throws ProtocolCreationException;;
+
+    public SendingNotificationAlive createSendingNotificationAlive(LocalDevice ld);
+    public SendingNotificationByebye createSendingNotificationByebye(LocalDevice ld);
+    public SendingSearch createSendingSearch(UpnpHeader searchTarget);
+    public SendingAction createSendingAction(ActionInvocation invocation, URL url);
+    public SendingSubscribe createSendingSubscribe(RemoteGENASubscription s);
+    public SendingRenewal createSendingRenewal(RemoteGENASubscription s);
+    public SendingUnsubscribe createSendingUnsubscribe(RemoteGENASubscription s);
+    public SendingEvent createSendingEvent(LocalGENASubscription s);
+    
+}]]></pre>
+                                    </div>
+                                    <p>
+                    This API is a low-level interface that allows you to access the internals of the UPnP stack,
+                    in the rare case you need to manually trigger a particular procedure.
+                </p>
+                                    <p>
+                    The first two methods are called by the networking code when a message arrives,
+                    either multicast or unicast UDP datagrams, or a TCP (HTTP) stream request. The default
+                    protocol factory implementation will then pick the appropriate receiving protocol
+                    implementation to handle the incoming message.
+                </p>
+                                    <p>
+                    The local registry of local services known to the UPnP stack naturally also sends messages,
+                    such as alive and byebye notifications. Also, if you write a UPnP control point various search,
+                    control, and eventing messages are send by the local UPnP stack. The protocol factory decouples
+                    the message sender (registry, control point) from the actual creation, preparation, and
+                    transmission of the messages.
+                </p>
+                                    <p>
+                    Transmission and reception of messages at the lowest-level is the job of the
+                    network <code>Router</code>.
+                </p>
+                                </div>
+                            </div>
+                            <div class="section" id="section.BasicAPI.UpnpService.Router">
+                                <div class="title">3.1.3. Accessing low-level network services</div>
+                                <div class="content">
+                                    <p>
+                    The reception and sending of messages, that is, all message transport, is encapsulated
+                    through the <code>Router</code> interface:
+                </p>
+                                    <div>
+                                        <pre class="prettyprint" xml:space="preserve"><![CDATA[public interface Router {
+
+    public void received(IncomingDatagramMessage msg);
+    public void received(UpnpStream stream);
+
+    public void send(OutgoingDatagramMessage msg);
+    public StreamResponseMessage send(StreamRequestMessage msg);
+
+    public void broadcast(byte[] bytes);
+
+}]]></pre>
+                                    </div>
+                                    <p>
+                    UPnP works with two types of messages: Multicast and unicast UDP
+                    datagrams which are typically handled asynchronously, and request/response TCP messages
+                    with an HTTP payload. The Cling Core bundled <code>RouterImpl</code> will
+                    instantiate and maintain the listeners for incoming messages as well as transmit any
+                    outgoing messages.
+                </p>
+                                    <p>
+                    The actual implementation of a message receiver which listens on the network or a message
+                    sender is provided by the <code>UpnpServiceConfiguration</code>, which we have introduced
+                    earlier. You can access the <code>Router</code> directly if you have to execute
+                    low-level operations on the network layer of the UPnP stack.
+                </p>
+                                    <p>
+                    Most of the time you will however work with the <code>ControlPoint</code> and
+                    <code>Registry</code> interfaces to interact with the UPnP stack.
+                </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="section" id="section.BasicAPI.ControlPoint">
+                        <div class="title">3.2. Client operations with ControlPoint</div>
+                        <div class="content">
+                            <p>
+            Your primary API when writing a UPnP client application is the <code>ControlPoint</code>.
+            An instance is available with <code>getControlPoint()</code> on the <code>UpnpService</code>.
+        </p>
+                            <div>
+                                <pre class="prettyprint" xml:space="preserve"><![CDATA[public interface ControlPoint {
+
+    public void search(UpnpHeader searchType);
+    public void execute(ActionCallback callback);
+    public void execute(SubscriptionCallback callback);
+
+}]]></pre>
+                            </div>
+                            <p>
+            A UPnP client application typically wants to:
+        </p>
+                            <ul>
+                                <li>
+                Search the network for a particular service which it knows how to utilize. Any response
+                to a search request will be delivered asynchronously, so you have to listen to the
+                <code>Registry</code> for device registrations, which will occur when devices
+                respond to your search request.
+            </li>
+                                <li>
+                Execute actions which are offered by services. Action execution is processed asynchronously
+                in Cling Core, and your <code>ActionCallback</code> will be notified when the execution
+                was a success (with result values), or a failure (with error status code and messages).
+            </li>
+                                <li>
+                Subscribe to a service's eventing, so your <code>SubscriptionCallback</code> is notified
+                asynchronously when the state of a service changes and an event has been received for your
+                client. You also use the callback to cancel the event subscription when you are no longer
+                interested in state changes.
+            </li>
+                            </ul>
+                            <p>
+            Let's start with searching for UPnP devices on the network.
+        </p>
+                            <div class="section">
+                                <div class="citation javadoc" id="javadoc.example.controlpoint.SearchExecuteTest">
+                                    <div class="title">3.2.1. Searching the network</div>
+                                    <div class="content">
+                                        <p>
+ When your control point joins the network it probably won't know any UPnP devices and services that
+ might be available. To learn about the present devices it can broadcast - actually with UDP multicast
+ datagrams - a search message which will be received by every device. Each receiver then inspects the
+ search message and decides if it should reply directly (with notification UDP datagrams) to the
+ sending control point.
+ </p>
+                                        <p>
+ Search messages carry a <em>search type</em> header and receivers consider this header when they
+ evaluate a potential response. The Cling <code>ControlPoint</code> API accepts a
+ <code>UpnpHeader</code> argument when creating outgoing search messages.
+ </p>
+                                        <div class="citation javadoc" id="javadoc.example.controlpoint.SearchExecuteTest.searchAll..">
+                                            <div class="content">
+                                                <p>
+ Most of the time you'd like all devices to respond to your search, this is what the
+ dedicated <code>STAllHeader</code> is used for:
+ </p>
+                                                <div class="citation javacode" id="javacode.example.controlpoint.SearchExecuteTest.searchAll..">
+                                                    <div class="content">
+                                                        <pre class="prettyprint">upnpService.getControlPoint().search(
+        new STAllHeader()
+);
+</pre>
+                                                    </div>
+                                                </div>
+                                                <p>
+ Notification messages will be received by your control point and you can listen to
+ the <code>Registry</code> and inspect the found devices and their services. (By the
+ way, if you call <code>search()</code> without any argument, that's the same.)
+ </p>
+                                            </div>
+                                        </div>
+                                        <div class="citation javadoc" id="javadoc.example.controlpoint.SearchExecuteTest.searchUDN..">
+                                            <div class="content">
+                                                <p>
+ On the other hand, when you already know the unique device name (UDN) of the device you
+ are searching for - maybe because your control point remembered it while it was turned off - you
+ can send a message which will trigger a response from only a particular device:
+ </p>
+                                                <div class="citation javacode" id="javacode.example.controlpoint.SearchExecuteTest.searchUDN..">
+                                                    <div class="content">
+                                                        <pre class="prettyprint">upnpService.getControlPoint().search(
+        new UDNHeader(udn)
+);
+</pre>
+                                                    </div>
+                                                </div>
+                                                <p>
+ This is mostly useful to avoid network congestion when dozens of devices might <em>all</em>
+ respond to a search request. Your <code>Registry</code> listener code however still has to
+ inspect each newly found device, as registrations might occur independently from searches.
+ </p>
+                                            </div>
+                                        </div>
+                                        <div class="citation javadoc" id="javadoc.example.controlpoint.SearchExecuteTest.searchDeviceType..">
+                                            <div class="content">
+                                                <p>
+ You can also search by device or service type. This search request will trigger responses
+ from all devices of type "<code>urn:schemas-upnp-org:device:BinaryLight:1</code>":
+ </p>
+                                                <div class="citation javacode" id="javacode.example.controlpoint.SearchExecuteTest.searchDeviceType..">
+                                                    <div class="content">
+                                                        <pre class="prettyprint">UDADeviceType udaType = new UDADeviceType("BinaryLight");
+upnpService.getControlPoint().search(
+        new UDADeviceTypeHeader(udaType)
+);
+</pre>
+                                                    </div>
+                                                </div>
+                                                <p>
+ If the desired device type is of a custom namespace, use this variation:
+ </p>
+                                                <div class="citation javacode" id="javacode_dt_search_custom">
+                                                    <div class="content">
+                                                        <pre class="prettyprint">DeviceType type = new DeviceType("org-mydomain", "MyDeviceType", 1);
+upnpService.getControlPoint().search(
+        new DeviceTypeHeader(type)
+);
+</pre>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="citation javadoc" id="javadoc.example.controlpoint.SearchExecuteTest.searchServiceType..">
+                                            <div class="content">
+                                                <p>
+ Or, you can search for all devices which implement a particular service type:
+ </p>
+                                                <div class="citation javacode" id="javacode.example.controlpoint.SearchExecuteTest.searchServiceType..">
+                                                    <div class="content">
+                                                        <pre class="prettyprint">UDAServiceType udaType = new UDAServiceType("SwitchPower");
+upnpService.getControlPoint().search(
+        new UDAServiceTypeHeader(udaType)
+);
+</pre>
+                                                    </div>
+                                                </div>
+                                                <div class="citation javacode" id="javacode_st_search_custom">
+                                                    <div class="content">
+                                                        <pre class="prettyprint">ServiceType type = new ServiceType("org-mydomain", "MyServiceType", 1);
+upnpService.getControlPoint().search(
+        new ServiceTypeHeader(type)
+);
+</pre>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="section">
+                                <div class="citation javadoc" id="javadoc.example.controlpoint.ActionInvocationTest">
+                                    <div class="title">3.2.2. Invoking an action</div>
+                                    <div class="content">
+                                        <p>
+ UPnP services expose state variables and actions. While the state variables represent the
+ current state of the service, actions are the operations used to query or maniuplate the
+ service's state. You have to obtain a <code>Service</code> instance from a
+ <code>Device</code> to access any <code>Action</code>. The target device can be local
+ to the same UPnP stack as your control point, or it can be remote of another device anywhere
+ on the network. We'll discuss later in this chapter how to access devices through the
+ local stack's <code>Registry</code>.
+ </p>
+                                        <p>
+ Once you have the device, access the <code>Service</code> through the metadata model, for example:
+ </p>
+                                        <div class="citation javacode" id="ai_findservice">
+                                            <div class="content">
+                                                <pre class="prettyprint">Service service = device.findService(new UDAServiceId("SwitchPower"));
+Action getStatusAction = service.getAction("GetStatus");
+</pre>
+                                            </div>
+                                        </div>
+                                        <p>
+ This method will search the device and all its embedded devices for a service with the given
+ identififer and returns either the found <code>Service</code> or <code>null</code>. The Cling
+ metamodel is thread-safe, so you can share an instance of <code>Service</code> or
+ <code>Action</code> and access it concurrently.
+ </p>
+                                        <p>
+ Invoking an action is the job of an instance of <code>ActionInvocation</code>, note that this
+ instance is <em>NOT</em> thread-safe and each thread that wishes to execute an action has to
+ obtain its own invocation from the <code>Action</code> metamodel:
+ </p>
+                                        <div class="citation javacode" id="ai_getstatus">
+                                            <div class="content">
+                                                <pre class="prettyprint">ActionInvocation getStatusInvocation = new ActionInvocation(getStatusAction);
+
+ActionCallback getStatusCallback = new ActionCallback(getStatusInvocation) {
+
+    @Override
+    public void success(ActionInvocation invocation) {
+        ActionArgumentValue status  = invocation.getOutput("ResultStatus");
+
+        assert status != null;
+
+        assertEquals(status.getArgument().getName(), "ResultStatus");
+
+        assertEquals(status.getDatatype().getClass(), BooleanDatatype.class);
+        assertEquals(status.getDatatype().getBuiltin(), Datatype.Builtin.BOOLEAN);
+
+        assertEquals((Boolean) status.getValue(), Boolean.valueOf(false));
+        assertEquals(status.toString(), "0"); // '0' is 'false' in UPnP
+    }
+
+    @Override
+    public void failure(ActionInvocation invocation,
+                        UpnpResponse operation,
+                        String defaultMsg) {
+        System.err.println(defaultMsg);
+    }
+};
+
+upnpService.getControlPoint().execute(getStatusCallback);
+</pre>
+                                            </div>
+                                        </div>
+                                        <p>
+ Execution is asynchronous, your <code>ActionCallback</code> has two methods which will be called
+ by the UPnP stack when the execution completes. If the action is successful, you can obtain any
+ output argument values from the invocation instance, which is conveniently passed into the
+ <code>success()</code> method. You can inspect the named output argument values and their datatypes to
+ continue processing the result.
+ </p>
+                                        <p>
+ Action execution doesn't have to be processed asynchronously, after all, the underlying HTTP/SOAP protocol
+ is a request waiting for a response. The callback programming model however fits nicely into a typical
+ UPnP client, which also has to process event notifications and device registrations asynchronously. If
+ you want to execute an <code>ActionInvocation</code> directly, within the current thread, use the empty
+ <code>ActionCallback.Default</code> implementation:
+ </p>
+                                        <div class="citation javacode" id="ai_synchronous">
+                                            <div class="content">
+                                                <pre class="prettyprint">new ActionCallback.Default(getStatusInvocation, upnpService.getControlPoint()).run();
+</pre>
+                                            </div>
+                                        </div>
+                                        <p>
+ When invocation fails you can access the failure details through
+ <code>invocation.getFailure()</code>, or use the shown convenience method to create a simple error
+ message. See the Javadoc of <code>ActionCallback</code> for more details.
+ </p>
+                                        <p>
+ When an action requires input argument values, you have to provide them. Like output arguments, any
+ input arguments of actions are also named, so you can set them by calling <code>setInput("MyArgumentName", value)</code>:
+ </p>
+                                        <div class="citation javacode" id="ai_settarget">
+                                            <div class="content">
+                                                <pre class="prettyprint">Action action = service.getAction("SetTarget");
+
+ActionInvocation setTargetInvocation = new ActionInvocation(action);
+
+setTargetInvocation.setInput("NewTargetValue", true); // Can throw InvalidValueException
+
+// Alternative:
+//
+// setTargetInvocation.setInput(
+//         new ActionArgumentValue(
+//                 action.getInputArgument("NewTargetValue"),
+//                 true
+//         )
+// );
+
+ActionCallback setTargetCallback = new ActionCallback(setTargetInvocation) {
+
+    @Override
+    public void success(ActionInvocation invocation) {
+        ActionArgumentValue[] output = invocation.getOutput();
+        assertEquals(output.length, 0);
+    }
+
+    @Override
+    public void failure(ActionInvocation invocation,
+                        UpnpResponse operation,
+                        String defaultMsg) {
+        System.err.println(defaultMsg);
+    }
+};
+
+upnpService.getControlPoint().execute(setTargetCallback);
+</pre>
+                                            </div>
+                                        </div>
+                                        <p>
+ This action has one input argument of UPnP type "boolean". You can set a Java <code>boolean</code>
+ primitive or <code>Boolean</code> instance and it will be automatically converted. If you set an
+ invalid value for a particular argument, such as an instance with the wrong type,
+ an <code>InvalidValueException</code> will be thrown immediately.
+ </p>
+                                        <div class="note">
+                                            <div class="title">Empty values and null in Cling</div>
+ There is no difference between empty string <code>""</code> and <code>null</code> in Cling,
+ because the UPnP specification does not address this issue. The SOAP  message of an action call
+ or an event message must contain an element <code><![CDATA[<SomeVar></SomeVar>]]></code> for all arguments, even if
+ it is an empty XML element. If you provide  an empty string or a null value when preparing a message,
+ it will always be a <code>null</code> on the receiving end because we can only transmit one
+ thing, an empty XML element. If you forget to set an input argument's value, it will be null/empty element.
+ </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="section">
+                                <div class="citation javadoc" id="javadoc.example.controlpoint.EventSubscriptionTest">
+                                    <div class="title">3.2.3. Receiving events from services</div>
+                                    <div class="content">
+                                        <p>
+ The UPnP specification defines a general event notification system (GENA) which is based on a
+ publish/subscribe paradigm. Your control point subscribes with a service in order to receive
+ events. When the service state changes, an event message will be delivered to the callback
+ of your control point. Subscriptions are periodically refreshed until you unsubscribe from
+ the service. If you do not unsubscribe and if a refresh of the subscription fails, maybe
+ because the control point was turned off without proper shutdown, the subscription will
+ timeout on the publishing service's side.
+ </p>
+                                        <p>
+ This is an example subscription on a service that sends events for a state variable named
+ <code>Status</code> (e.g. the previously shown <a href="#section.SwitchPower">SwitchPower</a>
+ service). The subscription's refresh and timeout period is 600 seconds:
+ </p>
+                                        <div class="citation javacode" id="javacode.example.controlpoint.EventSubscriptionTest.subscriptionLifecycle..">
+                                            <div class="content">
+                                                <pre class="prettyprint">SubscriptionCallback callback = new SubscriptionCallback(service, 600) {
+
+    @Override
+    public void established(GENASubscription sub) {
+        System.out.println("Established: " + sub.getSubscriptionId());
+    }
+
+    @Override
+    protected void failed(GENASubscription subscription,
+                          UpnpResponse responseStatus,
+                          Exception exception,
+                          String defaultMsg) {
+        System.err.println(defaultMsg);
+    }
+
+    @Override
+    public void ended(GENASubscription sub,
+                      CancelReason reason,
+                      UpnpResponse response) {
+        assert reason == null;
+    }
+
+    public void eventReceived(GENASubscription sub) {
+
+        System.out.println("Event: " + sub.getCurrentSequence().getValue());
+
+        Map&lt;String, StateVariableValue&gt; values = sub.getCurrentValues();
+        StateVariableValue status = values.get("Status");
+
+        assertEquals(status.getDatatype().getClass(), BooleanDatatype.class);
+        assertEquals(status.getDatatype().getBuiltin(), Datatype.Builtin.BOOLEAN);
+
+        System.out.println("Status is: " + status.toString());
+
+    }
+
+    public void eventsMissed(GENASubscription sub, int numberOfMissedEvents) {
+        System.out.println("Missed events: " + numberOfMissedEvents);
+    }
+
+};
+
+upnpService.getControlPoint().execute(callback);
+</pre>
+                                            </div>
+                                        </div>
+                                        <p>
+ The <code>SubscriptionCallback</code> offers the methods <code>failed()</code>,
+ <code>established()</code>, and <code>ended()</code> which are called during a subscription's lifecycle.
+ When a subscription ends you will be notified with a <code>CancelReason</code> whenever the termination
+ of the subscription was irregular. See the Javadoc of these methods for more details.
+ </p>
+                                        <p>
+ Every event message from the service will be passed to the <code>eventReceived()</code> method,
+ and every message will carry a sequence number. Variable values are not transmitted individually,
+ each message contains <code>StateVariableValue</code> instances for <em>all</em> evented
+ variables of a service. You'll receive a snapshot of the state of the service at the time the
+ event was triggered.
+ </p>
+                                        <p>
+ Whenever the receiving UPnP stack detects an event message that is out of sequence, e.g. because
+ some messages were lost during transport, the <code>eventsMissed()</code> method will be called
+ before you receive the event. You then decide if missing events is important for the correct
+ behavior of your application, or if you can silently ignore it and continue processing events
+ with non-consecutive sequence numbers.
+ </p>
+                                        <p>
+ You end a subscription regularly by calling <code>callback.end()</code>, which will unsubscribe
+ your control point from the service.
+ </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="section" id="section.BasicAPI.Registry">
+                        <div class="title">3.3. The Registry</div>
+                        <div class="content">
+                            <p>
+            The <code>Registry</code>, which you access with <code>getRegistry()</code> on the
+            <code>UpnpService</code>, is the heart of a Cling Core UPnP stack. The registry
+            is responsible for:
+        </p>
+                            <ul>
+                                <li>
+                Maintaining discovered UPnP devices on your network. It also offers a management
+                API so you can register local devices and offer local services. This is how you
+                expose your own UPnP devices on the network. The registry handles all notification,
+                expiration, request routing, refreshing, and so on.
+            </li>
+                                <li>
+                Managing GENA (general event &amp; notification architecture) subscriptions. Any
+                outgoing subscription to a remote service is known by the registry, it is refreshed
+                periodically so it doesn't expire. Any incoming eventing subscription to a local
+                service is also known and maintained by the registry (expired and removed when necessary).
+            </li>
+                                <li>
+                Providing the interface for the addition and removal of <code>RegistryListener</code>
+                instances. A registry listener is used in client or server UPnP applications, it
+                provides a uniform interface for notification of registry events. Typically, you write
+                and register a listener to be notified when a service you want to work with becomes
+                available on the network - on a local or remote device - and when it disappears.
+            </li>
+                            </ul>
+                            <div class="section">
+                                <div class="citation javadoc" id="javadoc.example.registry.RegistryBrowseTest">
+                                    <div class="title">3.3.1. Browsing the Registry</div>
+                                    <div class="content">
+                                        <p>
+ Although you typically create a <code>RegistryListener</code> to be notified of discovered and
+ disappearing UPnP devices on your network, sometimes you have to browse the <code>Registry</code>
+ manually.
+ </p>
+                                        <div class="citation javadoc" id="javadoc.example.registry.RegistryBrowseTest.findDevice..">
+                                            <div class="content">
+                                                <p>
+ The following call will return a device with the given unique device name, but
+ only a root device and not any embedded device. Set the second parameter of
+ <code>registry.getDevice()</code> to <code>false</code> if the device you are
+ looking for might be an embedded device.
+ </p>
+                                                <div class="citation javacode" id="javacode.example.registry.RegistryBrowseTest.findDevice..">
+                                                    <div class="content">
+                                                        <pre class="prettyprint">Registry registry = upnpService.getRegistry();
+Device foundDevice = registry.getDevice(udn, true);
+
+assertEquals(foundDevice.getIdentity().getUdn(), udn);
+</pre>
+                                                    </div>
+                                                </div>
+                                                <p>
+ If you know that the device you need is a <code>LocalDevice</code> - or a
+ <code>RemoteDevice</code> - you can use the following operation:
+ </p>
+                                                <div class="citation javacode" id="javacode_find_device_local">
+                                                    <div class="content">
+                                                        <pre class="prettyprint">LocalDevice localDevice = registry.getLocalDevice(udn, true);
+</pre>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="citation javadoc" id="javadoc.example.registry.RegistryBrowseTest.findDeviceByType..">
+                                            <div class="content">
+                                                <p>
+ Most of the time you need a device that is of a particular type or that implements
+ a particular service type, because this is what your control point can handle:
+ </p>
+                                                <div class="citation javacode" id="javacode.example.registry.RegistryBrowseTest.findDeviceByType..">
+                                                    <div class="content">
+                                                        <pre class="prettyprint">DeviceType deviceType = new UDADeviceType("MY-DEVICE-TYPE", 1);
+Collection&lt;Device&gt; devices = registry.getDevices(deviceType);
+</pre>
+                                                    </div>
+                                                </div>
+                                                <div class="citation javacode" id="javacode_find_serv_type">
+                                                    <div class="content">
+                                                        <pre class="prettyprint">ServiceType serviceType = new UDAServiceType("MY-SERVICE-TYPE-ONE", 1);
+Collection&lt;Device&gt; devices = registry.getDevices(serviceType);
+</pre>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="section">
+                                <div class="citation javadoc" id="javadoc.example.registry.RegistryListenerTest">
+                                    <div class="title">3.3.2. Listening to registry changes</div>
+                                    <div class="content">
+                                        <p>
+ The <code>RegistryListener</code> is your primary API when discovering devices and services with your
+ control point. UPnP operates asynchronous, so advertisements (either <em>alive</em> or <em>byebye</em>)
+ of devices can occur at any time. Responses to your network search messages are also asynchronous.
+ </p>
+                                        <p>
+ This is the interface:
+ </p>
+                                        <div class="citation javacode" id="javacode.example.registry.RegistryListenerTest.RegistryListener">
+                                            <div class="content">
+                                                <pre class="prettyprint">public interface RegistryListener {
+
+    public void remoteDeviceDiscoveryStarted(Registry registry, RemoteDevice device);
+    public void remoteDeviceDiscoveryFailed(Registry registry, RemoteDevice device, Exception ex);
+
+    public void remoteDeviceAdded(Registry registry, RemoteDevice device);
+    public void remoteDeviceUpdated(Registry registry, RemoteDevice device);
+    public void remoteDeviceRemoved(Registry registry, RemoteDevice device);
+
+    public void localDeviceAdded(Registry registry, LocalDevice device);
+    public void localDeviceRemoved(Registry registry, LocalDevice device);
+
+}
+</pre>
+                                            </div>
+                                        </div>
+                                        <p>
+ Typically you don't want to implement all of these methods. Some are only useful if you write
+ a service or a generic control point. Most of the time you want to be notified when a particular
+ device with a particular service appears on your network. So it is much easier to extend
+ the <code>DefaultRegistryListener</code>, which has empty implementations for all methods of
+ the interface, and only override the methods you need.
+ </p>
+                                        <div class="citation javadoc" id="javadoc.example.registry.RegistryListenerTest.quickstartListener..">
+                                            <div class="content">
+                                                <p>
+ The <code>remoteDeviceDiscoveryStarted()</code> and <code>remoteDeviceDiscoveryFailed()</code>
+ methods are completely optional but useful on slow machines (such as Android handsets). Cling
+ will retrieve and initialize all device metadata for each UPnP device before it will announce
+ it on the <code>Registry</code>. UPnP metadata is split into several XML descriptors, so retrieval
+ via HTTP of these descriptors, parsing, and validating all metadata for a complex UPnP device
+ and service model can take several seconds. These two methods allow you to access the device
+ as soon as possible, after the first descriptor has been retrieved and parsed. At this time
+ the services metadata is however not available:
+ </p>
+                                                <div class="citation javacode" id="javacode.example.registry.RegistryListenerTest.QuickstartRegistryListener">
+                                                    <div class="content">
+                                                        <pre class="prettyprint">public class QuickstartRegistryListener extends DefaultRegistryListener {
+
+    @Override
+    public void remoteDeviceDiscoveryStarted(Registry registry, RemoteDevice device) {
+
+        // You can already use the device here and you can see which services it will have
+        assertEquals(device.findServices().length, 3);
+
+        // But you can't use the services
+        for (RemoteService service: device.findServices()) {
+            assertEquals(service.getActions().length, 0);
+            assertEquals(service.getStateVariables().length, 0);
+        }
+    }
+
+    @Override
+    public void remoteDeviceDiscoveryFailed(Registry registry, RemoteDevice device, Exception ex) {
+        // You might want to drop the device, its services couldn't be hydrated
+    }
+}
+</pre>
+                                                    </div>
+                                                </div>
+                                                <p>
+ This is how you register and activate a listener:
+ </p>
+                                                <div class="citation javacode" id="javacode.example.registry.RegistryListenerTest.quickstartListener..">
+                                                    <div class="content">
+                                                        <pre class="prettyprint">QuickstartRegistryListener listener = new QuickstartRegistryListener();
+upnpService.getRegistry().addListener(listener);
+</pre>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="citation javadoc" id="javadoc.example.registry.RegistryListenerTest.regularListener..">
+                                            <div class="content">
+                                                <p>
+ Most of the time, on any device that is faster than a cellphone, your listeners will look
+ like this:
+ </p>
+                                                <div class="citation javacode" id="javacode.example.registry.RegistryListenerTest.MyListener">
+                                                    <div class="content">
+                                                        <pre class="prettyprint">public class MyListener extends DefaultRegistryListener {
+
+    @Override
+    public void remoteDeviceAdded(Registry registry, RemoteDevice device) {
+        Service myService = device.findService(new UDAServiceId("MY-SERVICE-123"));
+        if (myService != null) {
+            // Do something with the discovered service
+        }
+    }
+
+    @Override
+    public void remoteDeviceRemoved(Registry registry, RemoteDevice device) {
+        // Stop using the service if this is the same device, it's gone now
+    }
+}
+</pre>
+                                                    </div>
+                                                </div>
+                                                <p>
+ The device metadata of the parameter to <code>remoteDeviceAdded()</code> is fully hydrated, all
+ of its services, actions, and state variables are available. You can continue with this metadata,
+ writing action invocations and event monitoring callbacks. You also might want to react accordingly
+ when the device disappears from the network.
+ </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="chapter" id="chapter.CreatingServices">
+                <div class="title">4. Creating and binding services</div>
+                <div class="content">
+                    <p>
+            Out of the box, any Java class can be a UPnP service. Let's go back to the first
+            example of a UPnP service in chapter 1, the <a href="#section.SwitchPower">SwitchPower:1</a>
+            service implementation, repeated here:
+        </p>
+                    <div class="citation javacode" id="switchpower_repeat">
+                        <div class="content">
+                            <pre class="prettyprint">package example.binarylight;
+
+import org.teleal.cling.binding.annotations.*;
+
+@UpnpService(
+        serviceId = @UpnpServiceId("SwitchPower"),
+        serviceType = @UpnpServiceType(value = "SwitchPower", version = 1)
+)
+public class SwitchPower {
+
+    @UpnpStateVariable(defaultValue = "0", sendEvents = false)
+    private boolean target = false;
+
+    @UpnpStateVariable(defaultValue = "0")
+    private boolean status = false;
+
+    @UpnpAction
+    public void setTarget(@UpnpInputArgument(name = "NewTargetValue")
+                          boolean newTargetValue) {
+        target = newTargetValue;
+        status = newTargetValue;
+        System.out.println("Switch is: " + status);
+    }
+
+    @UpnpAction(out = @UpnpOutputArgument(name = "RetTargetValue"))
+    public boolean getTarget() {
+        return target;
+    }
+
+    @UpnpAction(out = @UpnpOutputArgument(name = "ResultStatus"))
+    public boolean getStatus() {
+        return status;
+    }
+
+}
+</pre>
+                        </div>
+                    </div>
+                    <p>
+            This class depends on the <code>org.teleal.cling.annotation</code> package at compile-time.
+            The metadata encoded in these source annotations is preserved in the bytecode and Cling
+            will read it at runtime when you <a href="#section.BindingDevice">bind the service</a>
+            ("binding" is just a fancy word for reading and writing metadata). You can load and execute
+            this class without accessing the annotations, in any environment and without having
+            the Cling libraries on your classpath. This is a compile-time dependency only.
+        </p>
+                    <p>
+            Cling annotations give you much flexibility in designing your service implementation class,
+            as shown in the following examples.
+        </p>
+                    <div class="section">
+                        <div class="citation javadoc" id="javadoc.example.localservice.BasicBindingTest">
+                            <div class="title">4.1. Annotating a service implementation</div>
+                            <div class="content">
+                                <p>
+ The previously shown service class had a few annotations on the class itself, declaring
+ the name and version of the service. Then annotations on fields were used to declare the
+ state variables of the service and annotations on methods to declare callable actions.
+ </p>
+                                <p>
+ Your service implementation might not have fields that directly map to UPnP state variables.
+ </p>
+                                <div class="section">
+                                    <div class="citation javadoc" id="javadoc.example.localservice.SwitchPowerAnnotatedClass">
+                                        <div class="title">4.1.1. Mapping state variables</div>
+                                        <div class="content">
+                                            <p>
+ The following example only has a single field named <code>power</code>,
+ however, the UPnP service requires two state variables. In this case
+ you declare the UPnP state variables with annotations on the class:
+ </p>
+                                            <div class="citation javacode" id="javacode.example.localservice.SwitchPowerAnnotatedClass">
+                                                <div class="content">
+                                                    <pre class="prettyprint">@UpnpService(
+        serviceId = @UpnpServiceId("SwitchPower"),
+        serviceType = @UpnpServiceType(value = "SwitchPower", version = 1)
+
+)
+@UpnpStateVariables(
+        {
+                @UpnpStateVariable(
+                        name = "Target",
+                        defaultValue = "0",
+                        sendEvents = false
+                ),
+                @UpnpStateVariable(
+                        name = "Status",
+                        defaultValue = "0"
+                )
+        }
+)
+public class SwitchPowerAnnotatedClass {
+
+    private boolean power;
+
+    @UpnpAction
+    public void setTarget(@UpnpInputArgument(name = "NewTargetValue")
+                          boolean newTargetValue) {
+        power = newTargetValue;
+        System.out.println("Switch is: " + power);
+    }
+
+    @UpnpAction(out = @UpnpOutputArgument(name = "RetTargetValue"))
+    public boolean getTarget() {
+        return power;
+    }
+
+    @UpnpAction(out = @UpnpOutputArgument(name = "ResultStatus"))
+    public boolean getStatus() {
+        return power;
+    }
+}
+</pre>
+                                                </div>
+                                            </div>
+                                            <p>
+ The <code>power</code> field is not mapped to the state variables and
+ you are free to design your service internals as you like. Did you
+ notice that you never declared the datatype of your state variables?
+ Also, how can Cling read the "current state" of your service for GENA
+ subscribers or when a "query state variable" action is received?
+ Both questions have the same answer.
+ </p>
+                                            <p>
+ Let's consider GENA eventing first. This example has an evented
+ state variable called <code>Status</code>, and if a control point
+ subscribes to the service to be notified of changes, how
+ will Cling obtain the current status? If you'd have used
+ <code>@UpnpStateVariable</code> on your fields, Cling would then
+ directly access field values through Java Reflection. On the other
+ hand if you declare state variables not on fields but on your service
+ class, Cling will during binding detect any JavaBean-style getter
+ method that matches the derived property name of the state variable.
+ </p>
+                                            <p>
+ In other words, Cling will discover that your class has a
+ <code>getStatus()</code> method. It doesn't matter if that method
+ is also an action-mapped method, the important thing is that it
+ matches JavaBean property naming conventions. The <code>Status</code>
+ UPnP state variable maps to the <code>status</code> property, which
+ is expected to have a <code>getStatus()</code> accessor method.
+ Cling will use this method to read the current state of your
+ service for GENA subscribers and when the state variable is
+ manually queried.
+ </p>
+                                            <p>
+ If you do not provide a UPnP datatype name in your
+ <code>@UpnpStateVariable</code> annotation, Cling will use the type
+ of the annotated field or discovered JavaBean getter method to
+ figure out the type. The supported default mappings between Java types
+ and UPnP datatypes are shown in the following table:
+ </p>
+                                            <table border="1" class="infotable halfwidth">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Java Type</th>
+                                                        <th class="halfwidth">UPnP Datatype</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>
+                                                            <code>java.lang.Boolean</code>
+                                                        </td>
+                                                        <td>
+                                                            <code>boolean</code>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <code>boolean</code>
+                                                        </td>
+                                                        <td>
+                                                            <code>boolean</code>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <code>java.lang.Short</code>
+                                                        </td>
+                                                        <td>
+                                                            <code>i2</code>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <code>short</code>
+                                                        </td>
+                                                        <td>
+                                                            <code>i2</code>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <code>java.lang.Integer</code>
+                                                        </td>
+                                                        <td>
+                                                            <code>i4</code>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <code>int</code>
+                                                        </td>
+                                                        <td>
+                                                            <code>i4</code>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <code>org.teleal.cling.model.types.UnsignedIntegerOneByte</code>
+                                                        </td>
+                                                        <td>
+                                                            <code>ui1</code>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <code>org.teleal.cling.model.types.UnsignedIntegerTwoBytes</code>
+                                                        </td>
+                                                        <td>
+                                                            <code>ui2</code>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <code>org.teleal.cling.model.types.UnsignedIntegerFourBytes</code>
+                                                        </td>
+                                                        <td>
+                                                            <code>ui4</code>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <code>java.lang.Float</code>
+                                                        </td>
+                                                        <td>
+                                                            <code>r4</code>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <code>float</code>
+                                                        </td>
+                                                        <td>
+                                                            <code>r4</code>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <code>java.lang.Double</code>
+                                                        </td>
+                                                        <td>
+                                                            <code>float</code>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <code>double</code>
+                                                        </td>
+                                                        <td>
+                                                            <code>float</code>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <code>java.lang.Character</code>
+                                                        </td>
+                                                        <td>
+                                                            <code>char</code>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <code>char</code>
+                                                        </td>
+                                                        <td>
+                                                            <code>char</code>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <code>java.lang.String</code>
+                                                        </td>
+                                                        <td>
+                                                            <code>string</code>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <code>java.util.Calendar</code>
+                                                        </td>
+                                                        <td>
+                                                            <code>datetime</code>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <code>Byte[]</code>
+                                                        </td>
+                                                        <td>
+                                                            <code>bin.base64</code>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <code>java.net.URI</code>
+                                                        </td>
+                                                        <td>
+                                                            <code>uri</code>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p>
+ Cling tries to provide smart defaults. For example, the previously shown service classes
+ did not name the related state variable of action output arguments, as required by UPnP.
+ Cling will automatically detect that the <code>getStatus()</code> method is a JavaBean
+ getter method (its name starts with <code>get</code> or <code>is</code>) and use the
+ JavaBean property name to find the related state variable. In this case that would be
+ the JavaBean property <code>status</code> and Cling is also smart enough to know that
+ you really want the uppercase UPnP state variable named <code>Status</code>.
+ </p>
+                                <div class="section">
+                                    <div class="citation javadoc" id="javadoc.example.localservice.SwitchPowerNamedStateVariable">
+                                        <div class="title">4.1.2. Explicitly naming related state variables</div>
+                                        <div class="content">
+                                            <p>
+ If your mapped action method does not match the name of a mapped state variable,
+ you have to provide the name of (any) argument's related state variable:
+ </p>
+                                            <div class="citation javacode" id="javacode.example.localservice.SwitchPowerNamedStateVariable">
+                                                <div class="content">
+                                                    <pre class="prettyprint">@UpnpAction(
+        name = "GetStatus",
+        out = @UpnpOutputArgument(
+                name = "ResultStatus",
+                stateVariable = "Status"
+        )
+)
+public boolean retrieveStatus() {
+    return status;
+}
+</pre>
+                                                </div>
+                                            </div>
+                                            <p>
+ Here the method has the name <code>retrieveStatus</code>, which
+ you also have to override if you want it be known as a the
+ <code>GetStatus</code> UPnP action. Because it is no longer a JavaBean
+ accessor for <code>status</code>, it explicitly has to be linked with
+ the related state variable <code>Status</code>. You always have to
+ provide the related state variable name if your action has more than one
+ output argument.
+ </p>
+                                            <p>
+ The "related statevariable" detection algorithm in Cling has one more trick
+ up its sleeve however. The UPnP specification says that a state variable which
+ is only ever used to describe the type of an input or output argument should
+ be named with the prefix <code>A_ARG_TYPE_</code>. So if you do not name the
+ related state variable of your action argument, Cling will also
+ look for a state variable with the name
+ <code>A_ARG_TYPE_[Name Of Your Argument]</code>. In the example above, Cling
+ is therefore also searching (unsuccessfully) for a state variable named
+ <code>A_ARG_TYPE_ResultStatus</code>. (Given that direct querying
+ of state variables is already deprecated in UDA 1.0, there are <em>NO</em>
+ state variables which are anything but type declarations for action input/output
+ arguments. This is a good example why UPnP is such a horrid specification.)
+ </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p>
+ For the next example, let's assume you have a class that was already written, not
+ necessarily  as a service backend for UPnP but for some other purpose. You can't
+ redesign and rewrite your class without interrupting all existing code. Cling offers
+ some flexibility in the mapping of action methods, especially how the output of
+ an action call is obtained.
+ </p>
+                                <div class="section">
+                                    <div class="citation javadoc" id="javadoc.example.localservice.SwitchPowerExtraGetter">
+                                        <div class="title">4.1.3. Getting an output value from another method</div>
+                                        <div class="content">
+                                            <p>
+ In the following example, the UPnP action has an output argument but the
+ mapped method is void and does not return any value:
+ </p>
+                                            <div class="citation javacode" id="javacode.example.localservice.SwitchPowerExtraGetter">
+                                                <div class="content">
+                                                    <pre class="prettyprint">public boolean getStatus() {
+    return status;
+}
+
+@UpnpAction(
+        name = "GetStatus",
+        out = @UpnpOutputArgument(
+                name = "ResultStatus",
+                getterName = "getStatus"
+        )
+)
+public void retrieveStatus() {
+    // NOOP in this example
+}
+</pre>
+                                                </div>
+                                            </div>
+                                            <p>
+ By providing a <code>getterName</code> in the annotation you can instruct
+ Cling to call this getter method when the action method completes, taking
+ the getter method's return value as the output argument value. If there
+ are several output arguments you can map each to a different getter method.
+ </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p>
+ Alternatively, and especially if an action has several output arguments, you
+ can return multiple values wrapped in a JavaBean from your action method.
+ </p>
+                                <div class="section">
+                                    <div class="citation javadoc" id="javadoc.example.localservice.SwitchPowerBeanReturn">
+                                        <div class="title">4.1.4. Getting output values from a JavaBean</div>
+                                        <div class="content">
+                                            <p>
+ Here the action method does not return the output argument value directly,
+ but a JavaBean instance is returned which offers a getter method to obtain
+ the output argument value:
+ </p>
+                                            <div class="citation javacode" id="javacode.example.localservice.SwitchPowerBeanReturn">
+                                                <div class="content">
+                                                    <pre class="prettyprint">@UpnpAction(
+        name = "GetStatus",
+        out = @UpnpOutputArgument(
+                name = "ResultStatus",
+                getterName = "getWrapped"
+        )
+)
+public StatusHolder getStatus() {
+    return new StatusHolder(status);
+}
+
+public class StatusHolder {
+    boolean wrapped;
+
+    public StatusHolder(boolean wrapped) {
+        this.wrapped = wrapped;
+    }
+
+    public boolean getWrapped() {
+        return wrapped;
+    }
+}
+</pre>
+                                                </div>
+                                            </div>
+                                            <p>
+ Cling will detect that you mapped a getter name in the output argument
+ and that the action method is not <code>void</code>. It now expects that
+ it will find the getter method on the returned JavaBean. If there are
+ several output arguments, all of them have to be mapped to getter methods
+ on the returned JavaBean.
+ </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <p>
+            An important piece is missing from the <a href="#section.SwitchPower">SwitchPower:1</a>
+            implementation: It doesn't fire any events when the status of the power switch changes. This
+            is in fact required by the specification that defines the <em>SwitchPower:1</em> service.
+            The following section explains how you can propagate state changes from within your
+            UPnP service to local and remote subscribers.
+        </p>
+                    <div class="section">
+                        <div class="citation javadoc" id="javadoc.example.localservice.EventProviderTest">
+                            <div class="title">4.2. Providing events on service state changes</div>
+                            <div class="content">
+                                <p>
+ The standard mechanism in the JDK for eventing is the <code>PropertyChangeListener</code> reacting
+ on a <code>PropertyChangeEvent</code>. Cling utilizes this API for service eventing, thus avoiding
+ a dependency between your service code and proprietary APIs.
+ </p>
+                                <p>
+ Consider the following modification of the original <a href="#section.SwitchPower">SwitchPower:1</a>
+ implementation:
+ </p>
+                                <div class="citation javacode" id="javacode.example.localservice.SwitchPowerWithPropertyChangeSupport">
+                                    <div class="content">
+                                        <pre class="prettyprint">package example.localservice;
+
+import org.teleal.cling.binding.annotations.*;
+import java.beans.PropertyChangeSupport;
+
+@UpnpService(
+        serviceId = @UpnpServiceId("SwitchPower"),
+        serviceType = @UpnpServiceType(value = "SwitchPower", version = 1)
+)
+public class SwitchPowerWithPropertyChangeSupport {
+
+    private final PropertyChangeSupport propertyChangeSupport;
+
+    public SwitchPowerWithPropertyChangeSupport() {
+        this.propertyChangeSupport = new PropertyChangeSupport(this);
+    }
+
+    public PropertyChangeSupport getPropertyChangeSupport() {
+        return propertyChangeSupport;
+    }
+
+    @UpnpStateVariable(defaultValue = "0", sendEvents = false)
+    private boolean target = false;
+
+    @UpnpStateVariable(defaultValue = "0")
+    private boolean status = false;
+
+    @UpnpAction
+    public void setTarget(@UpnpInputArgument(name = "NewTargetValue") boolean newTargetValue) {
+
+        boolean targetOldValue = target;
+        target = newTargetValue;
+        boolean statusOldValue = status;
+        status = newTargetValue;
+
+        // These have no effect on the UPnP monitoring but it's JavaBean compliant
+        getPropertyChangeSupport().firePropertyChange("target", targetOldValue, target);
+        getPropertyChangeSupport().firePropertyChange("status", statusOldValue, status);
+
+        // This will send a UPnP event, it's the name of a state variable that sends events
+        getPropertyChangeSupport().firePropertyChange("Status", statusOldValue, status);
+    }
+
+    @UpnpAction(out = @UpnpOutputArgument(name = "RetTargetValue"))
+    public boolean getTarget() {
+        return target;
+    }
+
+    @UpnpAction(out = @UpnpOutputArgument(name = "ResultStatus"))
+    public boolean getStatus() {
+        return status;
+    }
+
+}
+</pre>
+                                    </div>
+                                </div>
+                                <p>
+ The only additional dependency is on <code>java.beans.PropertyChangeSupport</code>. Cling
+ detects the <code>getPropertyChangeSupport()</code> method of your service class and automatically
+ binds the service management on it. You will have to have this method for eventing to work with
+ Cling. You can create the <code>PropertyChangeSupport</code> instance
+ in your service's constructor or any other way, the only thing Cling is interested in are property
+ change events with the "property" name of a UPnP state variable.
+ </p>
+                                <p>
+ Consequently, <code>firePropertyChange("NameOfAStateVariable")</code> is how you tell Cling that
+ a state variable value has changed. It doesn't even matter if you call
+ <code>firePropertyChange("Status")</code> or <code>firePropertyChange("Status", oldValue, newValue)</code>.
+ Cling <em>only</em> cares about the state variable name; if it knows the state variable is evented it will
+ pull the data out of your service implementation instance by accessing the appropriate field or a getter.
+ </p>
+                                <p>
+ The reason for this behavior is that in UPnP an event message has to include all evented state
+ variable values, not just the one that changed. So Cling will read all of your evented state variable
+ values from your service implementation when you fire a single relevant change. It does not care about
+ a single state variable's old and new value. You can add those values when you fire the event if you
+ also want to listen to state changes in your code, and you require the old and new value.
+ </p>
+                                <p>
+ Note that most of the time a JavaBean property name is <em>not</em> the same as UPnP state variable
+ name. For example, the JavaBean <code>status</code> property name is lowercase, while the UPnP state
+ variable name is uppercase <code>Status</code>. The Cling eventing system ignores any property
+ change event that doesn't exactly name a service state variable. This allows you to use
+ JavaBean eventing independently from UPnP eventing, e.g. for GUI binding (Swing components also
+ use the JavaBean eventing system).
+ </p>
+                            </div>
+                        </div>
+                    </div>
+                    <p>
+            More advanced mappings are possible and often required, as shown in the next
+            examples. We are now leaving the <em>SwitchPower</em> service behind, as it is
+            no longer complex enough.
+        </p>
+                    <div class="section" id="section.CreatingServices.ConvertingValues">
+                        <div class="title">4.3. Converting string action argument values</div>
+                        <div class="content">
+                            <p>
+            The UPnP specification defines no framework for custom datatypes. The
+            predictable result is that service designers and vendors are overloading
+            strings with whatever semantics they consider necessary for their particular
+            needs. For example, the UPnP A/V specifications often require lists of values
+            (like a list of strings or a list of numbers), which are then transported
+            between service and control point as a single string - the individual values
+            are represented in this string separated by commas.
+        </p>
+                            <p>
+            Cling supports these conversions and it tries to be as transparent as possible.
+        </p>
+                            <div class="section">
+                                <div class="citation javadoc" id="javadoc.example.localservice.StringConvertibleTest">
+                                    <div class="title">4.3.1. String value converters</div>
+                                    <div class="content">
+                                        <p>
+ Consider the following service class with all state variables of
+ <code>string</code> UPnP datatype - but with a much more specific
+ Java type:
+ </p>
+                                        <div class="citation javacode" id="javacode.example.localservice.MyServiceWithStringConvertibles">
+                                            <div class="content">
+                                                <pre class="prettyprint">import org.teleal.cling.model.types.csv.CSV;
+import org.teleal.cling.model.types.csv.CSVInteger;
+
+@UpnpService(
+        serviceId = @UpnpServiceId("MyService"),
+        serviceType = @UpnpServiceType(namespace = "mydomain", value = "MyService"),
+        stringConvertibleTypes = MyStringConvertible.class
+)
+public class MyServiceWithStringConvertibles {
+
+    @UpnpStateVariable
+    private URL myURL;
+
+    @UpnpStateVariable
+    private URI myURI;
+
+    @UpnpStateVariable(datatype = "string")
+    private List&lt;Integer&gt; myNumbers;
+
+    @UpnpStateVariable
+    private MyStringConvertible myStringConvertible;
+
+    @UpnpAction(out = @UpnpOutputArgument(name = "Out"))
+    public URL getMyURL() {
+        return myURL;
+    }
+
+    @UpnpAction
+    public void setMyURL(@UpnpInputArgument(name = "In") URL myURL) {
+        this.myURL = myURL;
+    }
+
+    @UpnpAction(out = @UpnpOutputArgument(name = "Out"))
+    public URI getMyURI() {
+        return myURI;
+    }
+
+    @UpnpAction
+    public void setMyURI(@UpnpInputArgument(name = "In") URI myURI) {
+        this.myURI = myURI;
+    }
+
+    @UpnpAction(out = @UpnpOutputArgument(name = "Out"))
+    public CSV&lt;Integer&gt; getMyNumbers() {
+        CSVInteger wrapper = new CSVInteger();
+        if (myNumbers != null)
+            wrapper.addAll(myNumbers);
+        return wrapper;
+    }
+
+    @UpnpAction
+    public void setMyNumbers(
+            @UpnpInputArgument(name = "In")
+            CSVInteger myNumbers
+    ) {
+        this.myNumbers = myNumbers;
+    }
+
+    @UpnpAction(out = @UpnpOutputArgument(name = "Out"))
+    public MyStringConvertible getMyStringConvertible() {
+        return myStringConvertible;
+    }
+
+    @UpnpAction
+    public void setMyStringConvertible(
+            @UpnpInputArgument(name = "In")
+            MyStringConvertible myStringConvertible
+    ) {
+        this.myStringConvertible = myStringConvertible;
+    }
+}
+</pre>
+                                            </div>
+                                        </div>
+                                        <p>
+ The state variables are all of UPnP datatype <code>string</code> because
+ Cling knows that the Java type of the annotated field is "string convertible".
+ This is always the case for <code>java.net.URI</code> and <code>java.net.URL</code>.
+ </p>
+                                        <p>
+ Any other Java type you'd like to use for automatic string conversion has to be named
+ in the <code>@UpnpService</code> annotation on the class, like the
+ <code>MyStringConvertible</code>. Note that these types have to
+ have an appropriate <code>toString()</code> method and a single argument constructor
+ that accepts a <code>java.lang.String</code> ("from string" conversion).
+ </p>
+                                        <p>
+ The <code>List&lt;Integer&gt;</code> is the collection you'd use in your service
+ implementation to group several numbers. Let's assume that for UPnP communication
+ you need a comma-separated representation of the individual values in a string,
+ as is required by many of the UPnP A/V specifications. First, tell Cling that
+ the state variable really is a string datatype, it can't infer that
+ from the field type. Then, if an action has this output argument, instead of
+ manually creating the comma-separated string you pick the appropriate converter
+ from the classes in <code>org.teleal.cling.model.types.csv.*</code> and return
+ it from your action method. These are actually <code>java.util.List</code>
+ implementations, so you could use them <em>instead</em> of
+ <code>java.util.List</code> if you don't care about the dependency. Any action
+ input argument value can also be converted from a comma-separated string
+ representation to a list automatically - all you have to do is use the
+ CSV converter class as an input argument type.
+ </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="section">
+                                <div class="citation javadoc" id="javadoc.example.localservice.EnumTest">
+                                    <div class="title">4.3.2. Working with enums</div>
+                                    <div class="content">
+                                        <p>
+ Java <code>enum</code>'s are special, unfortunately: You can't instantiate
+ an enum value through reflection. So Cling can convert your enum value
+ into a string for transport in UPnP messages, but you have to convert
+ it back manually from a string. This is shown in the following
+ service example:
+ </p>
+                                        <div class="citation javacode" id="javacode.example.localservice.MyServiceWithEnum">
+                                            <div class="content">
+                                                <pre class="prettyprint">@UpnpService(
+        serviceId = @UpnpServiceId("MyService"),
+        serviceType = @UpnpServiceType(namespace = "mydomain", value = "MyService"),
+        stringConvertibleTypes = MyStringConvertible.class
+)
+public class MyServiceWithEnum {
+
+    public enum Color {
+        Red,
+        Green,
+        Blue
+    }
+
+    @UpnpStateVariable
+    private Color color;
+
+    @UpnpAction(out = @UpnpOutputArgument(name = "Out"))
+    public Color getColor() {
+        return color;
+    }
+
+    @UpnpAction
+    public void setColor(@UpnpInputArgument(name = "In") String color) {
+        this.color = Color.valueOf(color);
+    }
+
+}
+</pre>
+                                            </div>
+                                        </div>
+                                        <p>
+ Cling will automatically assume that the datatype is a UPnP string if the
+ field (or getter) or getter Java type is an enum. Furthermore, an
+ <code>&lt;allowedValueList&gt;</code> will be created in your service descriptor
+ XML, so control points know that this state variable has in fact a defined
+ set of possible values.
+ </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="chapter" id="chapter.Android">
+                <div class="title">5. Cling on Android</div>
+                <div class="content">
+                    <p>
+            Cling Core provides a UPnP stack for Android applications. Typically you'd write control point
+            applications, as most Android systems today are small hand-held devices. You can however also
+            write UPnP server applications on Android, all features of Cling Core are supported.
+        </p>
+                    <div class="note">
+                        <div class="title">Cling on the Android emulator</div>
+            At the time of writing, receiving UDP Multicast datagrams was not supported by the Android
+            emulator. The emulator will send (multicast) UDP datagrams, however. You will be able
+            to send a multicast UPnP search and receive UDP unicast responses, therefore discover
+            existing running devices. You will not discover devices which have been turned on
+            after your search, and you will not receive any message when a device is switched off.
+            Other control points on your network will not discover your local Android
+            device/services at all. All of this can be confusing when testing your application, so
+            unless you really understand what works and what doesn't, you might want to use a
+            real device instead.
+        </div>
+                    <p>
+            This chapter explains how you can integrate Cling with your Android application as a
+            shared Android application service component.
+        </p>
+                    <div class="section" id="section.Android.ConfiguringService">
+                        <div class="title">5.1. Configuring the application service</div>
+                        <div class="content">
+                            <p>
+                    You can instantiate the Cling <code>UpnpService</code> in your Android application's
+                    main activity. On the other hand, if several activities in your application require
+                    access to the UPnP stack, a better design would utilize a background
+                    <code>android.app.Service</code>. Any activity that wants to access the UPnP stack
+                    can then bind and unbind from this service as needed.
+                </p>
+                            <p>
+                    The interface of this service component is <code>org.teleal.cling.android.AndroidUpnpService</code>:
+                </p>
+                            <div>
+                                <pre class="prettyprint" xml:space="preserve"><![CDATA[public interface AndroidUpnpService {
+    public UpnpService get();
+    public UpnpServiceConfiguration getConfiguration();
+    public Registry getRegistry();
+    public ControlPoint getControlPoint();
+}]]></pre>
+                            </div>
+                            <p>
+                    An activity typically accesses the <code>Registry</code> of known
+                    UPnP devices or searches for and controls UPnP devices with the
+                    <code>ControlPoint</code>.
+                </p>
+                            <p>
+                    You have to configure the built-in implementation of this service component in your
+                    <code>AndroidManifest.xml</code>:
+                </p>
+                            <div>
+                                <pre class="prettyprint" xml:space="preserve"><![CDATA[
+<manifest ...>
+
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+
+    <application ...>
+
+        <activity ...>
+            ...
+        </activity>
+
+        <service android:name="org.teleal.cling.android.AndroidUpnpServiceImpl"/>
+
+    </application>
+
+</manifest>]]></pre>
+                            </div>
+                            <p>
+                    The Cling UPnP service requires access to the WiFi interface on the device,
+                    this is in fact the only network interface on which it will bind. The service
+                    will automatically detect when the WiFi interface is switched off and handle
+                    this situation gracefully: Any client operation will result in a "no response
+                    from server" state, which your code has to expect anyway.
+                </p>
+                            <p>
+                    The service component starts and stops the UPnP system when the service component
+                    is created and destroyed. This depends on how you access the service component
+                    from within your activities.
+                </p>
+                        </div>
+                    </div>
+                    <div class="section" id="section.Android.BindService">
+                        <div class="title">5.2. Accessing the service from an activity</div>
+                        <div class="content">
+                            <p>
+                    The lifecycle of services in Android is well defined. The first activity which
+                    binds to a service will start the service if it is not already running. When no
+                    activity is bound to the service any more, the operating system will destroy the
+                    service.
+                </p>
+                            <p>
+                    Let's write a simple UPnP browsing activity. It shows all devices on your network
+                    in a list and it has a menu option which triggers a search action. The activity
+                    connects to the UPnP service and then listens to any device additions or removals
+                    in the registry, so the displayed list of devices is kept up-to-date.
+                </p>
+                            <p>
+                    This is the skeleton of the activity class:
+                </p>
+                            <div>
+                                <pre class="prettyprint" xml:space="preserve"><![CDATA[import android.app.ListActivity;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
+import android.os.Bundle;
+import android.os.IBinder;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.Toast;
+import org.teleal.cling.android.AndroidUpnpService;
+import org.teleal.cling.android.AndroidUpnpServiceImpl;
+import org.teleal.cling.model.meta.Device;
+import org.teleal.cling.model.meta.LocalDevice;
+import org.teleal.cling.model.meta.RemoteDevice;
+import org.teleal.cling.registry.DefaultRegistryListener;
+import org.teleal.cling.registry.Registry;
+
+public class UpnpBrowser extends ListActivity {
+
+    private ArrayAdapter<DeviceDisplay> listAdapter;
+
+    private AndroidUpnpService upnpService;
+
+    private ServiceConnection serviceConnection = ...
+
+    private RegistryListener registryListener = new BrowseRegistryListener();
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        listAdapter =
+            new ArrayAdapter(
+                this,
+                android.R.layout.simple_list_item_1
+            );
+        setListAdapter(listAdapter);
+
+        getApplicationContext().bindService(
+            new Intent(this, AndroidUpnpServiceImpl.class),
+            serviceConnection,
+            Context.BIND_AUTO_CREATE
+        );
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (upnpService != null) {
+            upnpService.getRegistry().removeListener(registryListener);
+        }
+        getApplicationContext().unbindService(serviceConnection);
+    }
+
+    ...
+
+}]]></pre>
+                            </div>
+                            <p>
+                    We utilize the default layout provided by the Android runtime and the <code>ListActivity</code>
+                    superclass. Note that this activity can be your applications main activity, or further up
+                    in the stack of a task. The <code>listAdapter</code> is the glue between the device additions
+                    and removals on the Cling <code>Registry</code> and the list of items shown in the user interface.
+                </p>
+                            <p>
+                    The <code>upnpService</code> variable is <code>null</code> when no backend service
+                    is bound to this activity. Binding and unbinding occurs in the <code>onCreate()</code>
+                    and <code>onDestroy()</code> callbacks, so the activity is bound to the service as
+                    long as it is alive.
+                </p>
+                            <div class="note">
+                                <div class="title">Pausing the UPnP service in the background</div>
+                    When an activity is no longer active (in stopped or paused state) it will still be
+                    bound to the UPnP service. The UPnP service will continue running, even if
+                    your application is not visible anymore. This will consume CPU time and power on
+                    your device, as the UPnP service's registry has to periodically maintain discovered
+                    devices, refresh announcements of local devices, remove expired GENA event
+                    subscriptions, and so on. You can tell the UPnP service to no longer maintain its registry
+                    by calling <code>Registry#pause()</code> when your activity's <code>onPause()</code> or
+                    <code>onStop()</code> method is called. You can then resume the background service
+                    maintenance with <code>Registry#resume()</code>, or check the status with
+                    <code>Registry#isPaused()</code>. Please read the Javadoc of these methods for more
+                    details and what consequences pausing registry maintenance has on devices, services,
+                    and GENA subscriptions.
+                </div>
+                            <p>
+                    Binding and unbinding the service is handled with this <code>ServiceConnection</code>:
+                </p>
+                            <div>
+                                <pre class="prettyprint" xml:space="preserve"><![CDATA[private ServiceConnection serviceConnection = new ServiceConnection() {
+
+    public void onServiceConnected(ComponentName className, IBinder service) {
+        upnpService = (AndroidUpnpService) service;
+
+        // Refresh the list with all known devices
+        listAdapter.clear();
+        for (Device device : upnpService.getRegistry().getDevices()) {
+            registryListener.deviceAdded(device);
+        }
+
+        // Getting ready for future device advertisements
+        upnpService.getRegistry().addListener(registryListener);
+
+        // Search asynchronously for all devices
+        upnpService.getControlPoint().search();
+    }
+
+    public void onServiceDisconnected(ComponentName className) {
+        upnpService = null;
+    }
+};]]></pre>
+                            </div>
+                            <p>
+                    First, all UPnP devices that are already known can be queried and displayed (there
+                    might be none if the UPnP service was just started and no device has so far
+                    announced its presence.)
+                </p>
+                            <p>
+                    Next a listener is registered with the <code>Registry</code> of the UPnP service.
+                    This listener will process additions and removals of devices as they are
+                    discovered on your network, and update the items shown in the user interface list.
+                    The <code>BrowseRegistryListener</code> is removed when the activity is destroyed.
+                </p>
+                            <p>
+                    Finally, you start asynchronous discovery by sending a search message to all
+                    UPnP devices, so they will announce themselves. Note that this search message is
+                    NOT required every time you connect to the service. It is only necessary once,
+                    to populate the registry with all known devices when your (main) activity and
+                    application starts.
+                </p>
+                            <p>
+                    This is the <code>BrowseRegistryListener</code>, its only job is to update the
+                    displayed list items:
+                </p>
+                            <div>
+                                <pre class="prettyprint" xml:space="preserve"><![CDATA[class BrowseRegistryListener extends DefaultRegistryListener {
+
+    @Override
+    public void remoteDeviceDiscoveryStarted(Registry registry, RemoteDevice device) {
+        deviceAdded(device);
+    }
+
+    @Override
+    public void remoteDeviceDiscoveryFailed(Registry registry, final RemoteDevice device, final Exception ex) {
+        runOnUiThread(new Runnable() {
+            public void run() {
+                Toast.makeText(
+                        BrowseActivity.this,
+                        "Discovery failed of '" + device.getDisplayString() + "': " +
+                                (ex != null ? ex.toString() : "Couldn't retrieve device/service descriptors"),
+                        Toast.LENGTH_LONG
+                ).show();
+            }
+        });
+        deviceRemoved(device);
+    }
+
+    @Override
+    public void remoteDeviceAdded(Registry registry, RemoteDevice device) {
+        deviceAdded(device);
+    }
+
+    @Override
+    public void remoteDeviceRemoved(Registry registry, RemoteDevice device) {
+        deviceRemoved(device);
+    }
+
+    @Override
+    public void localDeviceAdded(Registry registry, LocalDevice device) {
+        deviceAdded(device);
+    }
+
+    @Override
+    public void localDeviceRemoved(Registry registry, LocalDevice device) {
+        deviceRemoved(device);
+    }
+
+    public void deviceAdded(final Device device) {
+        runOnUiThread(new Runnable() {
+            public void run() {
+                DeviceDisplay d = new DeviceDisplay(device);
+                int position = listAdapter.getPosition(d);
+                if (position >= 0) {
+                    // Device already in the list, re-set new value at same position
+                    listAdapter.remove(d);
+                    listAdapter.insert(d, position);
+                } else {
+                    listAdapter.add(d);
+                }
+            }
+        });
+    }
+
+    public void deviceRemoved(final Device device) {
+        runOnUiThread(new Runnable() {
+            public void run() {
+                listAdapter.remove(new DeviceDisplay(device));
+            }
+        });
+    }
+}]]></pre>
+                            </div>
+                            <p>
+                    For performance reasons, when a new device has been discovered, we don't wait until a fully
+                    hydrated (all services retrieved and validated) device metadata model is available.
+                    We react as quickly as possible and don't wait until the <code>remoteDeviceAdded()</code> method
+                    will be called. We display any device even while discovery is still running. You'd usually
+                    not care about this on a desktop computer, however, Android handheld devices are slow and
+                    UPnP uses several bloated XML descriptors to exchange metadata about devices and services.
+                    Sometimes it can take several seconds before a device and  its services are fully available.
+                    The <code>remoteDeviceDiscoveryStarted()</code> and <code>remoteDeviceDiscoveryFailed()</code>
+                    methods are called as soon as possible in the discovery process. By the way, devices are
+                    equal (<code>a.equals(b)</code>) if they have the same UDN, they might not be
+                    identical (<code>a==b</code>).
+                </p>
+                            <p>
+                    Note that the <code>Registry</code> will call the listener methods in a separate thread. You
+                    have to update the displayed list data in the thread of the user interface.
+                </p>
+                            <p>
+                    The following two methods on the activity add a menu with a search action, so a user can
+                    refresh the list manually:
+                </p>
+                            <div>
+                                <pre class="prettyprint" xml:space="preserve"><![CDATA[@Override
+public boolean onCreateOptionsMenu(Menu menu) {
+    menu.add(0, 0, 0, R.string.search_lan)
+        .setIcon(android.R.drawable.ic_menu_search);
+    return true;
+}
+
+@Override
+public boolean onOptionsItemSelected(MenuItem item) {
+    if (item.getItemId() == 0 && upnpService != null) {
+        upnpService.getRegistry().removeAllRemoteDevices();
+        upnpService.getControlPoint().search();
+    }
+    return false;
+}]]></pre>
+                            </div>
+                            <p>
+                    Finally, the <code>DeviceDisplay</code> class is a very simple JavaBean that only
+                    provides a <code>toString()</code> method for rendering the list. You can display
+                    any information about UPnP devices by changing this method:
+                </p>
+                            <div>
+                                <pre class="prettyprint" xml:space="preserve"><![CDATA[class DeviceDisplay {
+    Device device;
+
+    public DeviceDisplay(Device device) {
+        this.device = device;
+    }
+
+    public Device getDevice() {
+        return device;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DeviceDisplay that = (DeviceDisplay) o;
+        return device.equals(that.device);
+    }
+
+    @Override
+    public int hashCode() {
+        return device.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        // Display a little star while the device is being loaded
+        return device.isFullyHydrated() ? device.getDisplayString() : device.getDisplayString() + " *";
+    }
+}]]></pre>
+                            </div>
+                            <p>
+                    We have to override the equality operations as well, so we can remove and add
+                    devices from the list manually with the <code>DeviceDisplay</code> instance as
+                    a convenient handle.
+                </p>
+                        </div>
+                    </div>
+                    <div class="section" id="section.Android.Optimize">
+                        <div class="title">5.3. Optimizing service behavior</div>
+                        <div class="content">
+                            <p>
+                    The UPnP service consumes memory and CPU time while it is running. Although
+                    this is typically not an issue on a regular machine, this might be a problem
+                    on an Android handset. You can preserve memory and handset battery power if
+                    you disable certain features of the Cling UPnP service, or if you even pause
+                    and resume it when appropriate.
+                </p>
+                            <div class="section" id="section.Android.Optimize.MaintainRegistry">
+                                <div class="title">5.3.1. Tuning registry maintenance</div>
+                                <div class="content">
+                                    <p>
+                            There are several things going on in the background while the service is running.
+                            First, there is the registry of the service and its maintenance thread. If you
+                            are writing a control point, this background registry maintainer is going to
+                            renew your outbound GENA subscriptions with remote services periodically. It
+                            will also expire and remove any discovered remote devices when the drop off the
+                            network without saying goodbye. If you are providing a service, your device
+                            announcements will be refreshed by the registry maintainer and inbound GENA
+                            subscriptions will be removed if they haven't been renewed in time. Effectively,
+                            the registry maintainer prevents stale state on the UPnP network, so all
+                            participants have an up-to-date view of all other participants, and so on.
+                        </p>
+                                    <p>
+                            By default the registry maintainer will run every second and check if there is
+                            something to do (most of the time there is nothing to do, of course). The default
+                            Android configuration however has a default sleep interval of five seconds, so
+                            it is already consuming less background CPU time - while your application might
+                            be exposed to somewhat outdated information. You can further tune this setting
+                            by overriding the <code>getRegistryMaintenanceIntervalMillis()</code> in the
+                            <code>UpnpServiceConfiguration</code>. On Android, you have to subclass the
+                            service implementation to provide a new configuration:
+                        </p>
+                                    <div>
+                                        <pre class="prettyprint" xml:space="preserve"><![CDATA[public class MyUpnpService extends AndroidUpnpServiceImpl {
+
+    @Override
+    protected AndroidUpnpServiceConfiguration createConfiguration(WifiManager wifiManager) {
+        return new AndroidUpnpServiceConfiguration(wifiManager) {
+
+            @Override
+            public int getRegistryMaintenanceIntervalMillis() {
+                return 7000;
+            }
+
+        };
+    }
+}]]></pre>
+                                    </div>
+                                    <p>
+                            Don't forget to configure <code>MyUpnpService</code> in your
+                            <code>AndroidManifest.xml</code> now instead of the original implementation.
+                            You also have to use this type when binding to the service in your activities.
+                        </p>
+                                </div>
+                            </div>
+                            <div class="section" id="section.Android.Optimize.PauseRegistry">
+                                <div class="title">5.3.2. Pausing and resuming registry maintenance</div>
+                                <div class="content">
+                                    <p>
+                            Another more effective but also more complex optimization is pausing
+                            and resuming the registry whenever your activities no longer need the UPnP
+                            service. This is typically the case when an activity is no longer in the
+                            foreground (paused) or even no longer visible (stopped). By default any
+                            activity state change has no impact on the state of the UPnP service
+                            unless you bind and unbind from and to the service in your activities
+                            lifecycle callbacks.
+                        </p>
+                                    <p>
+                            In addition to binding and unbinding from the service you can also pause
+                            its registry by calling <code>Registry#pause()</code> when your activity's
+                            <code>onPause()</code> or <code>onStop()</code> method is called. You can then
+                            resume the background service maintenance (thread) with <code>Registry#resume()</code>,
+                            or check the status with <code>Registry#isPaused()</code>.
+                        </p>
+                                    <p>
+                            Please read the Javadoc of these methods for more details and what consequences
+                            pausing registry maintenance has on devices, services, and GENA subscriptions.
+                            Depending on what your application does, this rather minor optimization might
+                            not be worth dealing with these effects. On the other hand, your application
+                            should already be able to handle failed GENA subscription renewals, or
+                            disappearing remote devices!
+                        </p>
+                                </div>
+                            </div>
+                            <div class="section" id="section.Android.Optimize.Discovery">
+                                <div class="title">5.3.3. Configuring discovery</div>
+                                <div class="content">
+                                    <p>
+                            The most effective optimization is selective discovery of UPnP devices. Although
+                            the UPnP service's network transport layer will keep running (threads are waiting
+                            and sockets are bound) in the background, this feature allows you to drop
+                            discovery messages selectively and quickly.
+                        </p>
+                                    <p>
+                            For example, if you are writing a control point, you can drop any received discovery
+                            message if it doesn't advertise the service you want to control - you are not
+                            interested in any other device. On the other hand if you only <em>provide</em>
+                            devices and services, all discovery messages (except search messages for your
+                            services) can probably be dropped, you are not interested in any remote devices
+                            and their services at all.
+                        </p>
+                                    <p>
+                            Discovery messages are selected and potentially dropped by Cling as soon as the
+                            UDP datagram content is available, so no further parsing and processing is needed
+                            and CPU time/memory consumption is significantly reduced while you keep the
+                            UPnP service running even in the background on an Android handset.
+                        </p>
+                                    <p>
+                            To configure which services are supported by your control point application,
+                            override the service implementation as shown in the previous section and provide
+                            an array of <code>ServiceType</code> instances:
+                        </p>
+                                    <div>
+                                        <pre class="prettyprint" xml:space="preserve"><![CDATA[public class MyUpnpService extends AndroidUpnpServiceImpl {
+
+    @Override
+    protected AndroidUpnpServiceConfiguration createConfiguration(WifiManager wifiManager) {
+        return new AndroidUpnpServiceConfiguration(wifiManager) {
+
+            @Override
+            public ServiceType[] getExclusiveServiceTypes() {
+                return new ServiceType[] {
+                        new UDAServiceType("SwitchPower")
+                };
+            }
+
+        };
+    }
+}]]></pre>
+                                    </div>
+                                    <p>
+                            This configuration will ignore any advertisement from any device that doesn't also
+                            advertise a <em>schemas-upnp-org:SwitchPower:1</em> service. This is what our
+                            control point can handle, so we don't need anything else. If instead you'd return
+                            an empty array (the default behavior), all services and devices will be
+                            discovered and no advertisements will be dropped.
+                        </p>
+                                    <p>
+                            If you are not writing a control point but a server application, you can return
+                            <code>null</code> in the <code>getExclusiveServiceTypes()</code> method. This
+                            will disable discovery completely, now all device and service advertisements are
+                            dropped as soon as they are received.
+                        </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="lemmanote">
+    This manual has been created with <a href="http://teleal.org/projects/lemma/">Lemma</a> from
+    tested source code and Javadoc. Try it, you will like it.
+</div>
+    </body>
+</html>

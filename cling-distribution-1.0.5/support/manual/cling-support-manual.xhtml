@@ -1,0 +1,1318 @@
+<?xml version="1.0" encoding="utf-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xi="http://www.w3.org/2001/XInclude">
+    <head>
+        <title>Cling Support User Manual</title>
+        <link href="css/manual.css" media="screen" rel="stylesheet" type="text/css"/>
+    </head>
+    <body>
+        <div class="manual">
+            <div class="frontmatter">
+                <h1>Cling Support</h1>
+                <h2>User Manual</h2>
+                <div class="authors">
+                    <h3>Authors:</h3>
+                    <div class="author">Christian Bauer</div>
+                </div>
+                <div class="tableofcontents">
+                    <h3>Table Of Contents:</h3>
+                    <div class="toc">
+                        <div class="tocitem level_1 level_chapter">
+                            <span class="prefix">1.</span>
+                            <a href="#chapter.IGD">Working with InternetGatewayDevices</a>
+                        </div>
+                        <div class="tocitem level_2 level_section">
+                            <span class="prefix">1.1.</span>
+                            <a href="#section.PortMapping">Mapping a NAT port</a>
+                        </div>
+                        <div class="tocitem level_2 level_section">
+                            <span class="prefix">1.2.</span>
+                            <a href="#section.ConnectionInfo">Getting connection information</a>
+                        </div>
+                        <div class="tocitem level_1 level_chapter">
+                            <span class="prefix">2.</span>
+                            <a href="#chapter.MessageBox">Sending messages to Samsung TVs</a>
+                        </div>
+                        <div class="tocitem level_1 level_chapter">
+                            <span class="prefix">3.</span>
+                            <a href="#chapter.MediaServer">Accessing and providing MediaServers</a>
+                        </div>
+                        <div class="tocitem level_2 level_section">
+                            <span class="prefix">3.1.</span>
+                            <a href="#javadoc.example.mediaserver.ContentDirectoryBrowseTest">Browsing a ContentDirectory
+ </a>
+                        </div>
+                        <div class="tocitem level_2 level_section">
+                            <span class="prefix">3.2.</span>
+                            <a href="#javadoc.example.mediaserver.ContentDirectoryBrowseTest.MP3ContentDirectory">The ContentDirectory service</a>
+                        </div>
+                        <div class="tocitem level_2 level_section">
+                            <span class="prefix">3.3.</span>
+                            <a href="#javadoc.example.mediaserver.ConnectionManagerSimpleTest">A simple ConnectionManager for HTTP-GET</a>
+                        </div>
+                        <div class="tocitem level_2 level_section">
+                            <span class="prefix">3.4.</span>
+                            <a href="#javadoc.example.mediaserver.ConnectionManagerPeerTest">Managing connections between peers</a>
+                        </div>
+                        <div class="tocitem level_1 level_chapter">
+                            <span class="prefix">4.</span>
+                            <a href="#chapter.MediaRenderer">Accessing and providing MediaRenderers</a>
+                        </div>
+                        <div class="tocitem level_2 level_section">
+                            <span class="prefix">4.1.</span>
+                            <a href="#javadoc.example.mediarenderer.AVTransportTest">Creating a renderer from scratch</a>
+                        </div>
+                        <div class="tocitem level_3 level_section">
+                            <span class="prefix">4.1.1.</span>
+                            <a href="#javacode.example.mediarenderer.MyRendererStateMachine">Defining the states of the player</a>
+                        </div>
+                        <div class="tocitem level_3 level_section">
+                            <span class="prefix">4.1.2.</span>
+                            <a href="#javacode.example.mediarenderer.AVTransportTest.testCustomPlayer..">Registering the AVTransportService</a>
+                        </div>
+                        <div class="tocitem level_2 level_section">
+                            <span class="prefix">4.2.</span>
+                            <a href="#javadoc.example.mediarenderer.AVTransportTest.testCustomPlayer..">Controlling a renderer</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="chapter" id="chapter.IGD">
+                <div class="title">1. Working with InternetGatewayDevices</div>
+                <div class="content">
+                    <p>
+            An <em>InternetGatewayDevice</em> connects a LAN to a WAN, and through UPnP supports the
+            monitoring and configuration of LAN and WAN interfaces. Typically this functionality is used
+            for NAT port mapping: A client application on the LAN wants to receive network connections
+            from a WAN host, so it has to create a port forwarding and mapping on the LAN router.
+        </p>
+                    <div class="section" id="section.PortMapping">
+                        <div class="citation javadoc" id="javadoc.example.igd.PortMappingTest">
+                            <div class="title">1.1. Mapping a NAT port</div>
+                            <div class="content">
+                                <p>
+ Cling Support contains all the neccessary functionality, creating a port mapping
+ on all NAT routers on a network requires only three lines of code:
+ </p>
+                                <div class="citation javacode" id="javacode.example.igd.PortMappingTest.addDeleteWithListener..">
+                                    <div class="content">
+                                        <pre class="prettyprint">PortMapping desiredMapping =
+        new PortMapping(
+                8123,
+                "192.168.0.123",
+                PortMapping.Protocol.TCP,
+                "My Port Mapping"
+        );
+
+UpnpService upnpService =
+        new UpnpServiceImpl(
+                new PortMappingListener(desiredMapping)
+        );
+
+upnpService.getControlPoint().search();
+</pre>
+                                    </div>
+                                </div>
+                                <p>
+ The first line creates a port mapping configuration with the external/internal port, an
+ internal host IP, the protocol and an optional description.
+ </p>
+                                <p>
+ The second line starts the UPnP service with a special listener. This listener
+ will add the port mapping on any <em>InternetGatewayDevice</em> with a <em>WANIPConnection</em>
+ or a <em>WANPPPConnection</em> service as soon as it is discovered. You should immediately start
+ a <code>ControlPoint#search()</code> for all devices on your network, this triggers a response
+ and discovery of all NAT routers, activating the port mapping.
+ </p>
+                                <p>
+ The listener will also delete the port mapping when you stop the UPnP stack through
+ <code>UpnpService#shutdown()</code>, usually before your application quits. If you forget
+ to shutdown the stack the port mapping will remain on the <em>InternetGatewayDevice</em>
+ - the default lease duration is <code>0</code>!
+ </p>
+                                <p>
+ If anything goes wrong, log messages with <code>WARNING</code> level will be created on the
+ category <code>org.teleal.cling.support.igd.PortMappingListener</code>. You can override the
+ <code>PortMappingListener#handleFailureMessage(String)</code> method to customize this behavior.
+ </p>
+                                <p>
+ Alternatively, you can manually add and delete port mappings on an already discovered device with
+ the following ready-to-use action callbacks:
+ </p>
+                                <div class="citation javacode" id="javacode.example.igd.PortMappingTest.addDeleteManually..">
+                                    <div class="content">
+                                        <pre class="prettyprint">LocalService service = device.findService(new UDAServiceId("WANIPConnection"));
+
+upnpService.getControlPoint().execute(
+    new PortMappingAdd(service, desiredMapping) {
+
+        @Override
+        public void success(ActionInvocation invocation) {
+            // All OK
+        }
+
+        @Override
+        public void failure(ActionInvocation invocation,
+                            UpnpResponse operation,
+                            String defaultMsg) {
+            // Something is wrong
+        }
+    }
+);
+
+upnpService.getControlPoint().execute(
+    new PortMappingDelete(service, desiredMapping) {
+
+        @Override
+        public void success(ActionInvocation invocation) {
+            // All OK
+        }
+
+        @Override
+        public void failure(ActionInvocation invocation,
+                            UpnpResponse operation,
+                            String defaultMsg) {
+            // Something is wrong
+        }
+    }
+);
+</pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="section" id="section.ConnectionInfo">
+                        <div class="citation javadoc" id="javadoc.example.igd.ConnectionInfoTest">
+                            <div class="title">1.2. Getting connection information</div>
+                            <div class="content">
+                                <p>
+ The current connection information, including status, uptime, and last error message can be
+ retrieved from a <em>WAN*Connection</em> service with the following callback:
+ </p>
+                                <div class="citation javacode" id="javacode.example.igd.ConnectionInfoTest.testStatusInfo..">
+                                    <div class="content">
+                                        <pre class="prettyprint">LocalService service = device.findService(new UDAServiceId("WANIPConnection"));
+
+upnpService.getControlPoint().execute(
+    new GetStatusInfo(service) {
+
+        @Override
+        protected void success(Connection.StatusInfo statusInfo) {
+            assertEquals(statusInfo.getStatus(), Connection.Status.Connected);
+            assertEquals(statusInfo.getUptimeSeconds(), 1000);
+            assertEquals(statusInfo.getLastError(), Connection.Error.ERROR_NONE);
+        }
+
+        @Override
+        public void failure(ActionInvocation invocation,
+                            UpnpResponse operation,
+                            String defaultMsg) {
+            // Something is wrong
+        }
+    }
+);
+</pre>
+                                    </div>
+                                </div>
+                                <p>
+ Additionally, a callback for obtaining the external IP address of a connection is available:
+ </p>
+                                <div class="citation javacode" id="javacode.example.igd.ConnectionInfoTest.testIPAddress..">
+                                    <div class="content">
+                                        <pre class="prettyprint">LocalService service = device.findService(new UDAServiceId("WANIPConnection"));
+
+upnpService.getControlPoint().execute(
+    new GetExternalIP(service) {
+
+        @Override
+        protected void success(String externalIPAddress) {
+            assertEquals(externalIPAddress, "123.123.123.123");
+        }
+
+        @Override
+        public void failure(ActionInvocation invocation,
+                            UpnpResponse operation,
+                            String defaultMsg) {
+            // Something is wrong
+        }
+    }
+);
+</pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="chapter" id="chapter.MessageBox">
+                <div class="title">2. Sending messages to Samsung TVs</div>
+                <div class="content">
+                    <p>
+            Many network-enabled Samsung TVs implement the proprietary <em>samsung.com:MessageBoxService:1</em>.
+            The original purpose of this service was most likely connectivity with Samsung mobile phones;
+            notification messages and alerts would appear on your TV when you are at home and your cellphone
+            is connected to your local WiFi network (and your TV is turned on).
+        </p>
+                    <p>
+            Cling Support delivers client classes for sending notifications to your Samsung TV via UPnP. (See <a href="http://sourceforge.net/apps/mediawiki/samygo/index.php?title=MessageBoxService_request_format">this
+            page</a> for more information about the reverse-engineered raw message format.)
+        </p>
+                    <div class="note">
+                        <div class="title">Sending messages from an Android handset</div>
+            The XML parsing of messages requires Android 2.2, it won't work on any older version.
+        </div>
+                    <div class="citation javadoc" id="javadoc.example.messagebox.MessageBoxTest">
+                        <div class="content">
+                            <p>
+ There are several message types available. The first is an SMS with a sender and receiver
+ names and phone numbers, as well as a timestamp and message text:
+ </p>
+                            <div class="citation javacode" id="javacode.example.messagebox.MessageBoxTest.createSMS..">
+                                <div class="content">
+                                    <pre class="prettyprint">MessageSMS msg = new MessageSMS(
+        new DateTime("2010-06-21", "16:34:12"),
+        new NumberName("1234", "The Receiver"),
+        new NumberName("5678", "The Sender"),
+        "Hello World!"
+);
+</pre>
+                                </div>
+                            </div>
+                            <p>
+ This message will appear as a "New SMS Received!" notification on your TV, with the
+ option to reveal all message details. The other message types recognized by the TV
+ are incoming call notification as well as calendar schedule reminder:
+ </p>
+                            <div class="citation javacode" id="javacode.example.messagebox.MessageBoxTest.createIncomingCall..">
+                                <div class="content">
+                                    <pre class="prettyprint">MessageIncomingCall msg = new MessageIncomingCall(
+        new DateTime("2010-06-21", "16:34:12"),
+        new NumberName("1234", "The Callee"),
+        new NumberName("5678", "The Caller")
+);
+</pre>
+                                </div>
+                            </div>
+                            <div class="citation javacode" id="javacode.example.messagebox.MessageBoxTest.createScheduleReminder..">
+                                <div class="content">
+                                    <pre class="prettyprint">MessageScheduleReminder msg = new MessageScheduleReminder(
+        new DateTime("2010-06-21", "16:34:12"),
+        new NumberName("1234", "The Owner"),
+        "The Subject",
+        new DateTime("2010-06-21", "17:34:12"),
+        "The Location",
+        "Hello World!"
+);
+</pre>
+                                </div>
+                            </div>
+                            <p>
+ This is how you send a message asynchronously:
+ </p>
+                            <div class="citation javacode" id="javacode.example.messagebox.MessageBoxTest.sendMessageToTV..">
+                                <div class="content">
+                                    <pre class="prettyprint">LocalService service = device.findService(new ServiceId("samsung.com", "MessageBoxService"));
+
+upnpService.getControlPoint().execute(
+    new AddMessage(service, msg) {
+
+        @Override
+        public void success(ActionInvocation invocation) {
+            // All OK
+        }
+
+        @Override
+        public void failure(ActionInvocation invocation,
+                            UpnpResponse operation,
+                            String defaultMsg) {
+            // Something is wrong
+        }
+    }
+);
+</pre>
+                                </div>
+                            </div>
+                            <p>
+ Note that although your TV's service descriptor most likely contains a
+ <code>RemoveMessage</code> action and Cling Support also ships with a
+ <code>RemoveMessageCallback</code>, this action doesn't seem to be implemented
+ by any Samsung TVs. Messages can only be deleted directly on the TV, with the
+ remote control.
+ </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="chapter" id="chapter.MediaServer">
+                <div class="title">3. Accessing and providing MediaServers</div>
+                <div class="content">
+                    <p>
+            The standardized UPnP AV <em>MediaServer:1</em> device template describes some of the
+            the most popular UPnP services. Despite the name, these services are not about serving
+            and accessing media data such as music, picture, or video files. They are for sharing
+            metadata: The data about media files such as their name, format, and size, and a locator
+            that can be used to obtain the actual file. Transmission of the media file is outside
+            of the scope of these specifications; most of the time that is the job of a
+            simple HTTP server and client.
+        </p>
+                    <div class="note">
+                        <div class="title">ContentDirectory server or client on Android</div>
+            The XML parsing of DIDL content requires Android 2.2, it won't work on any older version.
+        </div>
+                    <p>
+            A <em>MediaServer:1</em> device has at least a <em>ContentDirectory:1</em> and a
+            <em>ConnectionManager:1</em> service.
+        </p>
+                    <div class="section">
+                        <div class="citation javadoc" id="javadoc.example.mediaserver.ContentDirectoryBrowseTest">
+                            <div class="title">3.1. Browsing a ContentDirectory
+ </div>
+                            <div class="content">
+                                <p>
+ A <em>ContentDirectory:1</em> service provides media resource metadata. The content format for
+ this metadata is XML and the schema is a mixture of DIDL, Dublic Core, and UPnP specific elements
+ and attributes. Usually you'd have to call the <code>Browse</code> action of the content directory
+ service to get this XML metadata and then parse it manually.
+ </p>
+                                <p>
+ The <code>Browse</code> action callback in Cling Support handles all of this for you:
+ </p>
+                                <div class="citation javadoc" id="javadoc.example.mediaserver.ContentDirectoryBrowseTest.browseTracks..">
+                                    <div class="content">
+                                        <div class="citation javacode" id="javacode.example.mediaserver.ContentDirectoryBrowseTest.browseTracks..">
+                                            <div class="content">
+                                                <pre class="prettyprint">new Browse(service, "3", BrowseFlag.DIRECT_CHILDREN) {
+
+    @Override
+    public void received(ActionInvocation actionInvocation, DIDLContent didl) {
+
+        // Read the DIDL content either using generic Container and Item types...
+        assertEquals(didl.getItems().size(), 2);
+        Item item1 = didl.getItems().get(0);
+        assertEquals(
+                item1.getTitle(),
+                "All Secrets Known"
+        );
+        assertEquals(
+                item1.getFirstPropertyValue(DIDLObject.Property.UPNP.ALBUM.class),
+                "Black Gives Way To Blue"
+        );
+        assertEquals(
+                item1.getFirstResource().getProtocolInfo().getContentFormatMimeType().toString(),
+                "audio/mpeg"
+        );
+        assertEquals(
+                item1.getFirstResource().getValue(),
+                "http://10.0.0.1/files/101.mp3"
+        );
+
+        // ... or cast it if you are sure about its type ...
+        assert MusicTrack.CLASS.equals(item1);
+        MusicTrack track1 = (MusicTrack) item1;
+        assertEquals(track1.getTitle(), "All Secrets Known");
+        assertEquals(track1.getAlbum(), "Black Gives Way To Blue");
+        assertEquals(track1.getFirstArtist().getName(), "Alice In Chains");
+        assertEquals(track1.getFirstArtist().getRole(), "Performer");
+
+        MusicTrack track2 = (MusicTrack) didl.getItems().get(1);
+        assertEquals(track2.getTitle(), "Check My Brain");
+
+        // ... which is much nicer for manual parsing, of course!
+
+    }
+
+    @Override
+    public void updateStatus(Status status) {
+        // Called before and after loading the DIDL content
+    }
+
+    @Override
+    public void failure(ActionInvocation invocation,
+                        UpnpResponse operation,
+                        String defaultMsg) {
+        // Something wasn't right...
+    }
+};
+</pre>
+                                            </div>
+                                        </div>
+                                        <p>
+ The first callback retrieves all the children of container <code>3</code> (container identifier).
+ </p>
+                                        <div class="note">
+                                            <div class="title">The root container identifier</div>
+     You can not copy/paste the shown example code! It will most likely not return any items!
+     You need to use a different container ID! The shown container ID '3' is just an example.
+     Your server does not have a container with identifier '3'! If you want to browse the
+     "root" container of the ContentDirectory, use the identifier '0':
+     <code>Browse(service, "0", BrowseFlag.DIRECT_CHILDREN)</code>. Although not standardized
+     many media servers consider the ID '0' to be the root container's identifier. If it's not,
+     ask your media server vendor. By listing all the children of the root container you can
+     get the identifiers of sub-containers and so on, recursively.
+ </div>
+                                        <p>
+ The <code>received()</code> method is called after the DIDL XML content has been validated and
+ parsed, so you can use a type-safe API to work with the metadata.
+ DIDL content is a composite structure of <code>Container</code> and <code>Item</code> elements,
+ here we are interested in the items of the container, ignoring any sub-containers it might or
+ might not have.
+ </p>
+                                        <p>
+ You can implement or ignore the <code>updateStatus()</code> method, it's convenient to be
+ notified before the metadata is loaded, and after it has been parsed. You can use this
+ event to update a status message/icon of your user interface, for example.
+ </p>
+                                        <p>
+ This more complex callback instantiation shows some of the available options:
+ </p>
+                                        <div class="citation javacode" id="browse_tracks2">
+                                            <div class="content">
+                                                <pre class="prettyprint">ActionCallback complexBrowseAction =
+        new Browse(service, "3", BrowseFlag.DIRECT_CHILDREN,
+                   "*",
+                   100l, 50l,
+                   new SortCriterion(true, "dc:title"),        // Ascending
+                   new SortCriterion(false, "dc:creator")) {   // Descending
+
+            // Implementation...
+
+        };
+</pre>
+                                            </div>
+                                        </div>
+                                        <p>
+ The arguments declare filtering with a wildcard, limiting the result to 50 items starting at
+ item 100 (pagination), and some sort criteria. It's up to the content directory
+ provider to handle these options.
+ </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="section">
+                        <div class="citation javadoc" id="javadoc.example.mediaserver.ContentDirectoryBrowseTest.MP3ContentDirectory">
+                            <div class="title">3.2. The ContentDirectory service</div>
+                            <div class="content">
+                                <p>
+ Let's switch perspective and consider the server-side of a <em>ContentDirectory</em>. Bundled in
+ Cling Support is a simple <em>ContentDirectory</em> abstract service class,
+ the only thing you have to do is implement the <code>browse()</code> method:
+ </p>
+                                <div class="citation javacode" id="javacode.example.mediaserver.ContentDirectoryBrowseTest.MP3ContentDirectory">
+                                    <div class="content">
+                                        <pre class="prettyprint">public class MP3ContentDirectory extends AbstractContentDirectoryService {
+
+    @Override
+    public BrowseResult browse(String objectID, BrowseFlag browseFlag,
+                               String filter,
+                               long firstResult, long maxResults,
+                               SortCriterion[] orderby) throws ContentDirectoryException {
+        try {
+
+            // This is just an example... you have to create the DIDL content dynamically!
+
+            DIDLContent didl = new DIDLContent();
+
+            String album = ("Black Gives Way To Blue");
+            String creator = "Alice In Chains"; // Required
+            PersonWithRole artist = new PersonWithRole(creator, "Performer");
+            MimeType mimeType = new MimeType("audio", "mpeg");
+
+            didl.addItem(new MusicTrack(
+                    "101", "3", // 101 is the Item ID, 3 is the parent Container ID
+                    "All Secrets Known",
+                    creator, album, artist,
+                    new Res(mimeType, 123456l, "00:03:25", 8192l, "http://10.0.0.1/files/101.mp3")
+            ));
+
+            didl.addItem(new MusicTrack(
+                    "102", "3",
+                    "Check My Brain",
+                    creator, album, artist,
+                    new Res(mimeType, 2222222l, "00:04:11", 8192l, "http://10.0.0.1/files/102.mp3")
+            ));
+
+            // Create more tracks...
+
+            // Count and total matches is 2
+            return new BrowseResult(new DIDLParser().generate(didl), 2, 2);
+
+        } catch (Exception ex) {
+            throw new ContentDirectoryException(
+                    ContentDirectoryErrorCode.CANNOT_PROCESS,
+                    ex.toString()
+            );
+        }
+    }
+
+    @Override
+    public BrowseResult search(String containerId,
+                               String searchCriteria, String filter,
+                               long firstResult, long maxResults,
+                               SortCriterion[] orderBy) throws ContentDirectoryException {
+        // You can override this method to implement searching!
+        return super.search(containerId, searchCriteria, filter, firstResult, maxResults, orderBy);
+    }
+}
+</pre>
+                                    </div>
+                                </div>
+                                <p>
+ You need a <code>DIDLContent</code> instance and a <code>DIDLParser</code> that will transform
+ the content into an XML string when the <code>BrowseResult</code> is returned. It's up to
+ you how you construct the DIDL content, typically you'd have a backend database you'd query
+ and then build the <code>Container</code> and <code>Item</code> graph dynamically. Cling provides
+ many convenience content model classes fore representing multimedia metadata, as defined
+ in the <em>ContentDirectory:1</em> specification (<code>MusicTrack</code>, <code>Movie</code>, etc.),
+ they can all be found in the package <code>org.teleal.cling.support.model</code>.
+ </p>
+                                <p>
+ The <code>DIDLParser</code> is <em>not</em> thread-safe, so don't share a single instance
+ between all threads of your server application!
+ </p>
+                                <p>
+ The <code>AbstractContentDirectoryService</code> only implements the mandatory actions and
+ state variables as defined in <em>ContentDirectory:1</em> for browsing and searching
+ content. If you want to enable editing of metadata, you have to add additional action methods.
+ </p>
+                            </div>
+                        </div>
+                        <p>
+                Your <em>MediaServer:1</em> device also has to have a <em>ConnectionManager:1</em> service.
+            </p>
+                    </div>
+                    <div class="section">
+                        <div class="citation javadoc" id="javadoc.example.mediaserver.ConnectionManagerSimpleTest">
+                            <div class="title">3.3. A simple ConnectionManager for HTTP-GET</div>
+                            <div class="content">
+                                <p>
+ If your transmission protocol is based on GET requests with HTTP - that is, your
+ media player will download or stream the media file from an HTTP server - all
+ you need to provide with your <em>MediaServer:1</em> is a very simple
+ <em>ConnectionManager:1</em>.
+ </p>
+                                <p>
+ This connection manager doesn't actually manage any connections, in fact, it doesn't
+ have to provide any functionality at all. This is how you can create and bind this
+ simple service with the Cling Support bundled <code>ConnectionManagerService</code>:
+ </p>
+                                <div class="citation javacode" id="javacode.example.mediaserver.ConnectionManagerSimpleTest.retrieveProtocolInfo..">
+                                    <div class="content">
+                                        <pre class="prettyprint">LocalService&lt;ConnectionManagerService&gt; service =
+        new AnnotationLocalServiceBinder().read(ConnectionManagerService.class);
+
+service.setManager(
+        new DefaultServiceManager&lt;ConnectionManagerService&gt;(
+                service,
+                ConnectionManagerService.class
+        )
+);
+</pre>
+                                    </div>
+                                </div>
+                                <p>
+ You can now add this service to your <em>MediaServer:1</em> device and everything will work.
+ </p>
+                                <p>
+ Many media servers however provide at least a list of "source" protocols. This list contains
+ all the (MIME) protocol types your media server might potentially have resources for.
+ A sink (renderer) would obtain this protocol information and decide upfront if
+ any resource from your media server can be played at all, without having to browse
+ the content and looking at each resource's type.
+ </p>
+                                <p>
+ First, create a list of protocol information that is supported:
+ </p>
+                                <div class="citation javacode" id="javacode.example.mediaserver.MediaServerSampleData.createSourceProtocols..">
+                                    <div class="content">
+                                        <pre class="prettyprint">final ProtocolInfos sourceProtocols =
+        new ProtocolInfos(
+                new ProtocolInfo(
+                        Protocol.HTTP_GET,
+                        ProtocolInfo.WILDCARD,
+                        "audio/mpeg",
+                        "DLNA.ORG_PN=MP3;DLNA.ORG_OP=01"
+                ),
+                new ProtocolInfo(
+                        Protocol.HTTP_GET,
+                        ProtocolInfo.WILDCARD,
+                        "video/mpeg",
+                        "DLNA.ORG_PN=MPEG1;DLNA.ORG_OP=01;DLNA.ORG_CI=0"
+                )
+        );
+</pre>
+                                    </div>
+                                </div>
+                                <p>
+ You now have to customize the instantiation of the connection manager service,
+ passing the list of procotols as a constructor argument:
+ </p>
+                                <div class="citation javacode" id="bind2">
+                                    <div class="content">
+                                        <pre class="prettyprint">service.setManager(
+    new DefaultServiceManager&lt;ConnectionManagerService&gt;(service, null) {
+        @Override
+        protected ConnectionManagerService createServiceInstance() throws Exception {
+            return new ConnectionManagerService(sourceProtocols, null);
+        }
+    }
+);
+</pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <p>
+                If your transmission protocol is not HTTP but for example RTSP streaming, your
+                connection manager will have to do more work.
+            </p>
+                    </div>
+                    <div class="section">
+                        <div class="citation javadoc" id="javadoc.example.mediaserver.ConnectionManagerPeerTest">
+                            <div class="title">3.4. Managing connections between peers</div>
+                            <div class="content">
+                                <p>
+ You'd probably agree that the <em>ConnectionManager</em> is unnecessary when the
+ media player <strong>pulls</strong> the media data with a HTTP GET request on the provided URL.
+ Understand that the UPnP <em>MediaServer</em> device provides the URL; if it also serves the
+ file named in the URL, that is outside of the scope of UPnP although a common system architecture.
+ </p>
+                                <p>
+ Then again, when the source of the media data has to <strong>push</strong> the data to
+ the player, or prepare the connection with the player beforehand, the <em>ConnectionManager</em>
+ service becomes useful. In this situation two connection managers would first negotiate a
+ connection with the <code>PrepareForConnection</code> action - which side initiates this is
+ up to you. Once the media finished playing, one of the connection managers will then
+ call the <code>ConnectionComplete</code> action. A connection has a unique identifier and
+ some associated protocol information, the connection managers handle the connection as peers.
+ </p>
+                                <p>
+ Cling Support provides an <code>AbstractPeeringConnectionManagerService</code> that will do
+ all the heavy lifting for you, all you have to do is implement the creation and closing of
+ connections. Although we are still discussing this in the context of a media server, this
+ peer negotiation of a connection naturally also has to be implemented on the media renderer/player
+ side. The following examples are therefore also relevant for the connection manager of
+ a <em>MediaRenderer</em>.
+ </p>
+                                <p>
+ First, implement how you want to manage the connection on both ends of the connection
+ (this is just one side):
+ </p>
+                                <div class="citation javadoc" id="javadoc.example.mediaserver.ConnectionManagerPeerTest.PeeringConnectionManager">
+                                    <div class="content">
+                                        <div class="citation javacode" id="javacode.example.mediaserver.ConnectionManagerPeerTest.PeeringConnectionManager">
+                                            <div class="content">
+                                                <pre class="prettyprint">public class PeeringConnectionManager extends AbstractPeeringConnectionManagerService {
+
+    PeeringConnectionManager(ProtocolInfos sourceProtocolInfo,
+                             ProtocolInfos sinkProtocolInfo) {
+        super(sourceProtocolInfo, sinkProtocolInfo);
+    }
+
+    @Override
+    protected ConnectionInfo createConnection(int connectionID,
+                                              int peerConnectionId,
+                                              ServiceReference peerConnectionManager,
+                                              ConnectionInfo.Direction direction,
+                                              ProtocolInfo protocolInfo)
+            throws ActionException {
+
+        // Create the connection on "this" side with the given ID now...
+        ConnectionInfo con = new ConnectionInfo(
+                connectionID,
+                123, // Logical Rendering Control service ID
+                456, // Logical AV Transport service ID
+                protocolInfo,
+                peerConnectionManager,
+                peerConnectionId,
+                direction,
+                ConnectionInfo.Status.OK
+        );
+
+        return con;
+    }
+
+    @Override
+    protected void closeConnection(ConnectionInfo connectionInfo) {
+        // Close the connection
+    }
+
+    @Override
+    protected void peerFailure(ActionInvocation invocation,
+                               UpnpResponse operation,
+                               String defaultFailureMessage) {
+        System.err.println("Error managing connection with peer: " + defaultFailureMessage);
+    }
+}
+</pre>
+                                            </div>
+                                        </div>
+                                        <p>
+ In the <code>createConnection()</code> method you have to provide the identifiers of your
+ Rendering Control and A/V Transport logical service, responsible for the created connection.
+ The connection ID has already been stored for you, so all you have to do is return the
+ connection information with these identifiers.
+ </p>
+                                        <p>
+ The <code>closeConnection()</code> method is the counterpart, here you would tear down
+ your logical services for this connection, or do whatever cleanup is necessary.
+ </p>
+                                        <p>
+ The <code>peerFailure()</code> message is not related to the two previous messages. It is
+ only used by a connection manager that invokes the actions, not on the receiving side.
+ </p>
+                                    </div>
+                                </div>
+                                <p>
+ Let's create a connection between two connection manager peers. First, create the service
+ acting as the source (let's also assume that this is the media server representing the source
+ of the media data):
+ </p>
+                                <div class="citation javacode" id="javacode.example.mediaserver.ConnectionManagerPeerTest.createDestroyConnections..">
+                                    <div class="content">
+                                        <pre class="prettyprint">PeeringConnectionManager peerOne =
+    new PeeringConnectionManager(
+            new ProtocolInfos("http-get:*:video/mpeg:*,http-get:*:audio/mpeg:*"),
+            null
+    );
+LocalService&lt;PeeringConnectionManager&gt; peerOneService = createService(peerOne);
+</pre>
+                                    </div>
+                                </div>
+                                <p>
+ You can see that it provides media metadata with several protocols. The sink (or
+ media renderer) is the peer connection manager:
+ </p>
+                                <div class="citation javacode" id="conmgr_sink">
+                                    <div class="content">
+                                        <pre class="prettyprint">PeeringConnectionManager peerTwo =
+    new PeeringConnectionManager(
+            null,
+            new ProtocolInfos("http-get:*:video/mpeg:*")
+    );
+LocalService&lt;PeeringConnectionManager&gt; peerTwoService = createService(peerTwo);
+</pre>
+                                    </div>
+                                </div>
+                                <p>
+ It plays only one particular protocol.
+ </p>
+                                <p>
+ The <code>createService()</code> method is simply setting the connection manager
+ instance on the service, after reading the service metadata from (already provided) annotations:
+ </p>
+                                <div class="citation javacode" id="javacode.example.mediaserver.ConnectionManagerPeerTest.createService.example.mediaserver.ConnectionManagerPeerTest.PeeringConnectionManager.">
+                                    <div class="content">
+                                        <pre class="prettyprint">public LocalService&lt;PeeringConnectionManager&gt; createService(final PeeringConnectionManager peer) {
+
+    LocalService&lt;PeeringConnectionManager&gt; service =
+            new AnnotationLocalServiceBinder().read(
+                    AbstractPeeringConnectionManagerService.class
+            );
+
+    service.setManager(
+            new DefaultServiceManager&lt;PeeringConnectionManager&gt;(service, null) {
+                @Override
+                protected PeeringConnectionManager createServiceInstance() throws Exception {
+                    return peer;
+                }
+            }
+    );
+    return service;
+}
+</pre>
+                                    </div>
+                                </div>
+                                <p>
+ Now one of the peers has to initiate the connection. It has to create a connection identifier, store this
+ identifier ("managing" the connection), and call the <code>PrepareForConnection</code> service of the
+ other peer. All of this is provided and encapsulated in the <code>createConnectionWithPeer()</code>
+ method:
+ </p>
+                                <div class="citation javacode" id="conmgr_prepare">
+                                    <div class="content">
+                                        <pre class="prettyprint">int peerOneConnectionID = peerOne.createConnectionWithPeer(
+    peerOneService.getReference(),
+    controlPoint,
+    peerTwoService,
+    new ProtocolInfo("http-get:*:video/mpeg:*"),
+    ConnectionInfo.Direction.Input
+);
+
+if (peerOneConnectionID == -1) {
+    // Connection establishment failed, the peerFailure()
+    // method has been called already. It's up to you
+    // how you'd like to continue at this point.
+}
+        
+int peerTwoConnectionID =
+        peerOne.getCurrentConnectionInfo(peerOneConnectionID) .getPeerConnectionID();
+
+int peerTwoAVTransportID =
+        peerOne.getCurrentConnectionInfo(peerOneConnectionID).getAvTransportID();
+</pre>
+                                    </div>
+                                </div>
+                                <p>
+ You have to provide a reference to the local service, a <code>ControlPoint</code>
+ to execute the action, and the protocol information you want to use for this connection. The
+ direction (<code>Input</code> in this case) is how the remote peer should handle the data
+ transmitted on this connection (again, we assume the peer is the data sink). The method returns
+ the identifer of the new connection. You can use this identifier to obtain
+ more information about the connection, for example the identifier of the connection assigned by
+ the other peer, or the logical service identifier for the AV Transport service, also assigned
+ by the remote peer.
+ </p>
+                                <p>
+ When you are done with the connection, close it with the peer:
+ </p>
+                                <div class="citation javacode" id="conmgr_close">
+                                    <div class="content">
+                                        <pre class="prettyprint">peerOne.closeConnectionWithPeer(
+        controlPoint,
+        peerTwoService,
+        peerOneConnectionID
+);
+</pre>
+                                    </div>
+                                </div>
+                                <p>
+ The <code>peerFailure()</code> method shown earlier will be called when
+ an invocation of <code>createConnectionWithPeer()</code> or
+ <code>closeConnectionWithPeer()</code> fails.
+ </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="chapter" id="chapter.MediaRenderer">
+                <div class="title">4. Accessing and providing MediaRenderers</div>
+                <div class="content">
+                    <p>
+            The purpose of the <em>MediaRenderer:1</em>'s services is remote control of a
+            media output device. A device that implements a renderer and therefore
+            has the necessary <em>AVTransport:1</em> service can be controlled just like with
+            a traditional infrared remote. Think about how awkward it is to control
+            video playback on the Playstation3 with the game controller. The
+            <em>MediaRenderer</em> is like a programmable universal remote API, so you
+            could replace your infrared remote control or Playstation controller with an
+            iPad, Android handset, touchscreen panel, laptop computer, or anything else
+            that speaks UPnP.
+        </p>
+                    <p>
+            (Unfortunately, the Playstation3 does not expose any
+            <em>MediaRenderer</em> services. In fact, most <em>MediaRenderer</em>
+            implementations in the wild, in TVs and set-top boxes, are incomplete
+            or incompatible given a to-the-letter interpretation of the specifications.
+            To make matters worse, instead of simplifying the UPnP A/V specifications,
+            more rules were added in DLNA guidelines, thus making compatiblity even
+            more difficult to achieve. A working and correctly behaving
+            <em>MediaRenderer</em> seems to be an exception, not the norm.)
+        </p>
+                    <p>
+            The procedure is simple: First you send the URL of a media resource
+            to the renderer. How you obtained the URL of that resource is entirely up to you,
+            probably browsing a media server's resources metadata. Now you control the state
+            of the renderer, for example, playing, pausing, stopping, recording the video,
+            and so on. You can also control other properties such as volume and brightness of
+            the audio/video content through the standardized <em>RenderingControl:1</em> service
+            of a media renderer.
+        </p>
+                    <p>
+           Cling Support provides the <code>org.teleal.cling.support.avtransport.AbstractAVTransportService</code>
+           class, an abstract type with all the UPnP actions and state variable mappings already in place.
+           To implement a <em>MediaRenderer</em> you'd have to create a subclass and implement all methods.
+           You should consider this strategy if you already have an existing media player, and you want
+           to provide a UPnP remote control interface.
+        </p>
+                    <p>
+            Alternatively, if you are writing a new media player, Cling can even provide the
+            state management and transitions for you, so all you have to implement is the
+            actual output of media data.
+        </p>
+                    <div class="section">
+                        <div class="citation javadoc" id="javadoc.example.mediarenderer.AVTransportTest">
+                            <div class="title">4.1. Creating a renderer from scratch</div>
+                            <div class="content">
+                                <p>
+ Cling Support provides a state machine for managing the current state of your
+ playback engine. This feature simplifies writing a media player with a UPnP
+ renderer control interface. There are several steps involved
+ </p>
+                                <div class="section">
+                                    <div class="title">4.1.1. Defining the states of the player</div>
+                                    <div class="content">
+                                        <p>
+ First, define your state machine and what states are supported by your player:
+ </p>
+                                        <div class="citation javacode" id="javacode.example.mediarenderer.MyRendererStateMachine">
+                                            <div class="content">
+                                                <pre class="prettyprint">package example.mediarenderer;
+
+import org.teleal.cling.support.avtransport.impl.AVTransportStateMachine;
+import org.teleal.common.statemachine.States;
+
+@States({
+        MyRendererNoMediaPresent.class,
+        MyRendererStopped.class,
+        MyRendererPlaying.class
+})
+interface MyRendererStateMachine extends AVTransportStateMachine {}
+</pre>
+                                            </div>
+                                        </div>
+                                        <p>
+ This is a very simple player with only three states: The initial state when no
+ media is present, and the Playing and Stopped states. You can also support
+ additional states, such as Paused and Recording but we want to keep this example
+ as simple as possible. (Also compare the "Theory of Operation" chapter and state
+ chart in the <em>AVTransport:1</em> specification document, section 2.5.)
+ </p>
+                                        <p>
+ Next, implement the states and the actions that trigger a transition from one
+ state to the other.
+ </p>
+                                        <div class="citation javadoc" id="javadoc.example.mediarenderer.MyRendererNoMediaPresent">
+                                            <div class="content">
+                                                <p>
+ The initial state has only one possible transition and an action that
+ triggers this transition:
+ </p>
+                                                <div class="citation javacode" id="javacode.example.mediarenderer.MyRendererNoMediaPresent">
+                                                    <div class="content">
+                                                        <pre class="prettyprint">public class MyRendererNoMediaPresent extends NoMediaPresent {
+
+    public MyRendererNoMediaPresent(AVTransport transport) {
+        super(transport);
+    }
+
+    @Override
+    public Class&lt;? extends AbstractState&gt; setTransportURI(URI uri, String metaData) {
+
+        getTransport().setMediaInfo(
+                new MediaInfo(uri.toString(), metaData)
+        );
+
+        // If you can, you should find and set the duration of the track here!
+        getTransport().setPositionInfo(
+                new PositionInfo(1, metaData, uri.toString())
+        );
+
+        // It's up to you what "last changes" you want to announce to event listeners
+        getTransport().getLastChange().setEventedValue(
+                getTransport().getInstanceId(),
+                new AVTransportVariable.AVTransportURI(uri),
+                new AVTransportVariable.CurrentTrackURI(uri)
+        );
+        
+        return MyRendererStopped.class;
+    }
+}
+</pre>
+                                                    </div>
+                                                </div>
+                                                <p>
+ When a client sets a new URI for playback, you have to prepare your renderer
+ accordingly. You typically want to change the <code>MediaInfo</code> of your
+ <code>AVTransport</code> to reflect the new "current" track, and you might
+ want to expose information about the track, such as the playback duration.
+ How you do this (e.g. you could actually already retrieve the file behind
+ the URL and analyze it) is up to you.
+ </p>
+                                                <p>
+ The <code>LastChange</code> object is how you notify control points about
+ any changes of state, here we tell the control points that there is a new
+ "AVTransportURI" as well as a new "CurrentTrackURI". You can add more
+ variables and their values to the <code>LastChange</code>, depending on
+ what actually changed - note that you should do this within a single
+ call of <code>setEventedValue(...)</code> if you consider several changes
+ to be atomic. (The <code>LastChange</code> will be polled and send to
+ control points periodically in the background, more about this later.)
+ </p>
+                                                <p>
+ The <code>AVTransport</code> will transition to the Stopped state after
+ the URI has been set.
+ </p>
+                                            </div>
+                                        </div>
+                                        <div class="citation javadoc" id="javadoc.example.mediarenderer.MyRendererStopped">
+                                            <div class="content">
+                                                <p>
+ The Stopped state has many possible transitions, from here a control point
+ can decide to play, seek, skip to the next track, and so on. The following
+ example is really not doing much, how you implement these triggers and
+ state transitions is completely dependend on the design of your playback
+ engine - this is only the scaffolding:
+ </p>
+                                                <div class="citation javacode" id="javacode.example.mediarenderer.MyRendererStopped">
+                                                    <div class="content">
+                                                        <pre class="prettyprint">public class MyRendererStopped extends Stopped {
+
+    public MyRendererStopped(AVTransport transport) {
+        super(transport);
+    }
+
+    public void onEntry() {
+        super.onEntry();
+        // Optional: Stop playing, release resources, etc.
+    }
+
+    public void onExit() {
+        // Optional: Cleanup etc.
+    }
+
+    @Override
+    public Class&lt;? extends AbstractState&gt; setTransportURI(URI uri, String metaData) {
+        // This operation can be triggered in any state, you should think
+        // about how you'd want your player to react. If we are in Stopped
+        // state nothing much will happen, except that you have to set
+        // the media and position info, just like in MyRendererNoMediaPresent.
+        // However, if this would be the MyRendererPlaying state, would you
+        // prefer stopping first?
+        return MyRendererStopped.class;
+    }
+
+    @Override
+    public Class&lt;? extends AbstractState&gt; stop() {
+        /// Same here, if you are stopped already and someone calls STOP, well...
+        return MyRendererStopped.class;
+    }
+
+    @Override
+    public Class&lt;? extends AbstractState&gt; play(String speed) {
+        // It's easier to let this classes' onEntry() method do the work
+        return MyRendererPlaying.class;
+    }
+
+    @Override
+    public Class&lt;? extends AbstractState&gt; next() {
+        return MyRendererStopped.class;
+    }
+
+    @Override
+    public Class&lt;? extends AbstractState&gt; previous() {
+        return MyRendererStopped.class;
+    }
+
+    @Override
+    public Class&lt;? extends AbstractState&gt; seek(SeekMode unit, String target) {
+        // Implement seeking with the stream in stopped state!
+        return MyRendererStopped.class;
+    }
+}
+</pre>
+                                                    </div>
+                                                </div>
+                                                <p>
+ Each state can have two magic methods: <code>onEntry()</code> and
+ <code>onExit()</code> - they do exactly what the name says. Don't forget
+ to call the superclass' method if you decide to use them!
+ </p>
+                                            </div>
+                                        </div>
+                                        <div class="citation javadoc" id="javadoc.example.mediarenderer.MyRendererPlaying">
+                                            <div class="content">
+                                                <p>
+ Usually you'd start playback when the <code>onEntry()</code> method of
+ the Playing state is called:
+ </p>
+                                                <div class="citation javacode" id="javacode.example.mediarenderer.MyRendererPlaying">
+                                                    <div class="content">
+                                                        <pre class="prettyprint">public class MyRendererPlaying extends Playing {
+
+    public MyRendererPlaying(AVTransport transport) {
+        super(transport);
+    }
+
+    @Override
+    public void onEntry() {
+        super.onEntry();
+        // Start playing now!
+    }
+
+    @Override
+    public Class&lt;? extends AbstractState&gt; setTransportURI(URI uri, String metaData) {
+        // Your choice of action here, and what the next state is going to be!
+        return MyRendererStopped.class;
+    }
+
+    @Override
+    public Class&lt;? extends AbstractState&gt; stop() {
+        // Stop playing!
+        return MyRendererStopped.class;
+    }
+</pre>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <p>
+ So far there wasn't much UPnP involved in writing your player - Cling just provided
+ a state machine for you and a way to signal state changes to clients through
+ the <code>LastEvent</code> interface.
+ </p>
+                                    </div>
+                                </div>
+                                <div class="section">
+                                    <div class="title">4.1.2. Registering the AVTransportService</div>
+                                    <div class="content">
+                                        <p>
+ Your next step is wiring the state machine into the UPnP service, so you can add the
+ service to a device and finally the Cling registry. First, bind the service and define
+ how the service manager will obtain an instance of your player:
+ </p>
+                                        <div class="citation javacode" id="javacode.example.mediarenderer.AVTransportTest.testCustomPlayer..">
+                                            <div class="content">
+                                                <pre class="prettyprint">LocalService&lt;AVTransportService&gt; service =
+        new AnnotationLocalServiceBinder().read(AVTransportService.class);
+
+service.setManager(
+        new DefaultServiceManager&lt;AVTransportService&gt;(service, null) {
+            @Override
+            protected AVTransportService createServiceInstance() throws Exception {
+                return new AVTransportService(
+                        MyRendererStateMachine.class,   // All states
+                        MyRendererNoMediaPresent.class  // Initial state
+                );
+            }
+        }
+);
+</pre>
+                                            </div>
+                                        </div>
+                                        <p>
+ The constructor takes two classes, one is your state machine definition, the other the
+ initial state of the machine after it has been created.
+ </p>
+                                        <p>
+ That's it - you are ready to add this service to a <em>MediaRenderer:1</em> device and
+ control points will see it and be able to call actions.
+ </p>
+                                        <p>
+ However, there is one more detail you have to consider: Propagation of <code>LastChange</code>
+ events. Whenever any player state or transition adds a "change" to <code>LastChange</code>, this
+ data will be accumulated. It will <em>not</em> be send to GENA subscribers immediately or
+ automatically! It's up to you how and when you want to flush all accumulated changes to
+ control points. A common approach would be a background thread that executes this operation every
+ second (or even more frequently):
+ </p>
+                                        <div class="citation javacode" id="avtransport_flushlastchange">
+                                            <div class="content">
+                                                <pre class="prettyprint">AVTransportService avTransportService = service.getManager().getImplementation();
+avTransportService.fireLastChange();
+</pre>
+                                            </div>
+                                        </div>
+                                        <p>
+ Finally, note that the <em>AVTransport:1</em> specification also defines "logical"
+ player instances. For examle, a renderer that can play two URIs simultaneously would have
+ two <em>AVTransport</em> instances, each with its own identifier. The reserved identifier
+ "0" is the default for a renderer that only supports playback of a single URI at a time.
+ In Cling, each logical <em>AVTransport</em> instance is represented by one instance of a
+ state machine (with all its states) associated with one instance of the <code>AVTransport</code>
+ type. All of these objects are never shared, and they are not thread-safe. Read the documentation and
+ code of the <code>AVTransportService</code> class for more information on this feature -
+ by default it supports only a single transport instance with ID "0", you have to override
+ the <code>findInstance()</code> methods to create and support several parallel playback
+ instances.
+ </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="section">
+                        <div class="citation javadoc" id="javadoc.example.mediarenderer.AVTransportTest.testCustomPlayer..">
+                            <div class="title">4.2. Controlling a renderer</div>
+                            <div class="content">
+                                <p>
+ Cling Support provides several action callbacks that simplify creating a control
+ point for the <em>AVTransport</em> service. This is the client side of your player,
+ the remote control.
+ </p>
+                                <p>
+ This is how you set an URI for playback:
+ </p>
+                                <div class="citation javacode" id="avtransport_ctrl1">
+                                    <div class="content">
+                                        <pre class="prettyprint">ActionCallback setAVTransportURIAction =
+        new SetAVTransportURI(service, "http://10.0.0.1/file.mp3", "NO METADATA") {
+            @Override
+            public void failure(ActionInvocation invocation, UpnpResponse operation, String defaultMsg) {
+                // Something was wrong
+            }
+        };
+</pre>
+                                    </div>
+                                </div>
+                                <p>
+ This is how you actually start playback:
+ </p>
+                                <div class="citation javacode" id="avtransport_ctrl2">
+                                    <div class="content">
+                                        <pre class="prettyprint">ActionCallback playAction =
+        new Play(service) {
+            @Override
+            public void failure(ActionInvocation invocation, UpnpResponse operation, String defaultMsg) {
+                // Something was wrong
+            }
+        };
+</pre>
+                                    </div>
+                                </div>
+                                <p>
+ Explore the package <code>org.teleal.cling.support.avtransport.callback</code> for more options.
+ </p>
+                                <p>
+ Your control point can also subscribe with the service and listen for <code>LastChange</code>
+ events. Cling provides a parser so you get the same types and classes on the control point
+ as are available on the server - it's the same for sending and receiving the event data.
+ When you receive the "last change" string in your <code>SubscriptionCallback</code> you
+ can transform it, for example, this event could have been sent by the service after the
+ player transitioned from NoMediaPresent to Stopped state:
+ </p>
+                                <div class="citation javacode" id="avtransport_ctrl3">
+                                    <div class="content">
+                                        <pre class="prettyprint">LastChange lastChange = new LastChange(
+        new AVTransportLastChangeParser(),
+        lastChangeString
+);
+assertEquals(
+        lastChange.getEventedValue(
+                0, // Instance ID!
+                AVTransportVariable.AVTransportURI.class
+        ).getValue(),
+        URI.create("http://10.0.0.1/file.mp3")
+);
+assertEquals(
+        lastChange.getEventedValue(
+                0,
+                AVTransportVariable.CurrentTrackURI.class
+        ).getValue(),
+        URI.create("http://10.0.0.1/file.mp3")
+);
+assertEquals(
+        lastChange.getEventedValue(
+                0,
+                AVTransportVariable.TransportState.class
+        ).getValue(),
+        TransportState.STOPPED
+);
+</pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="lemmanote">
+    This manual has been created with <a href="http://teleal.org/projects/lemma/">Lemma</a> from
+    tested source code and Javadoc. Try it, you will like it.
+</div>
+    </body>
+</html>
